@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="org.example.follow.me.manager.impl.FollowMeManagerImpl" name="FollowMeManager">
+    <callback method="start" transition="validate"/>
+    <callback method="stop" transition="invalidate"/>
+    <requires specification="org.example.follow.me.configuration.FollowMeConfiguration" field="followMe"/>
+    <properties/>
+    <provides specifications="org.example.follow.me.manager.FollowMeAdministration">
+      <property field="goal" name="goal" type="java.lang.String"/>
+    </provides>
+    <requires specification="fr.liglab.adele.icasa.service.preferences.Preferences" field="preferencesService"/>
+    <requires specification="fr.liglab.adele.icasa.service.location.PersonLocationService" field="personLocationService"/>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.presence.PresenceSensor" field="presenceSensor">
+      <callback method="bindPresenceSensor" type="bind"/>
+      <callback method="unbindPresenceSensor" type="unbind"/>
+    </requires>
+    <requires aggregate="true" specification="org.example.time.MomentOfTheDayService" field="momentOfTheDayService">
+      <callback method="bindMomentOfTheDayService" type="bind"/>
+      <callback method="unbindMomentOfTheDayService" type="unbind"/>
+    </requires>
+  </component>
+  <instance component="FollowMeManager" name="FollowMeManager-1">
+    <property name="maxNumLights" value="1"/>
+  </instance>
+</ipojo>
