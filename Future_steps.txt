@@ -1,0 +1,2 @@
+Binary Follow Me:
+Il prossimo step dovrebbe essere quello di riuscire a gestire la concorrenza tra le preferenze delle persone e l'illuminazione della sala. Cioè decidere chi ha la precedenza oppure se combinare i due dati.

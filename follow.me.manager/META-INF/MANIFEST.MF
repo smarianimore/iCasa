@@ -64,48 +64,51 @@ iPOJO-Components: instance { $component="FollowMeManager" $name="FollowM
  l.FollowMeManagerImpl" interface { $name="org.example.follow.me.manager
  .FollowMeAdministration" }interface { $name="fr.liglab.adele.icasa.devi
  ce.DeviceListener" }interface { $name="org.example.time.MomentOfTheDayL
- istener" }field { $name="followMe" $type="org.example.follow.me.configu
- ration.FollowMeConfiguration" }field { $name="momentOfTheDayService" $t
- ype="org.example.time.MomentOfTheDayService[]" }field { $name="personLo
- cationService" $type="fr.liglab.adele.icasa.service.location.PersonLoca
- tionService" }field { $name="preferencesService" $type="fr.liglab.adele
- .icasa.service.preferences.Preferences" }field { $name="presenceSensor"
-  $type="fr.liglab.adele.icasa.device.presence.PresenceSensor[]" }method
-  { $name="bindFollowMe" $arguments="{org.example.follow.me.configuratio
- n.FollowMeConfiguration,java.util.Map}" $names="{followMeConfiguration,
- properties}" }method { $name="unbindFollowMe" $arguments="{org.example.
- follow.me.configuration.FollowMeConfiguration,java.util.Map}" $names="{
- followMeConfiguration,properties}" }method { $name="stop" }method { $na
- me="start" }method { $name="setIlluminancePreference" $arguments="{org.
- example.follow.me.manager.IlluminanceGoal,java.lang.String}" $names="{i
- lluminanceGoal,user}" }method { $name="getIlluminancePreference" $retur
- n="org.example.follow.me.manager.IlluminanceGoal" }method { $name="setE
- nergySavingGoal" $arguments="{org.example.follow.me.manager.EnergyGoal}
- " $names="{energyGoal}" }method { $name="getEnergyGoal" $return="org.ex
- ample.follow.me.manager.EnergyGoal" }method { $name="setUserPreference"
-  $arguments="{java.lang.String,java.lang.String,float}" $names="{user,n
- ame,preference}" }method { $name="getUserPreference" $return="java.util
- .Set" $arguments="{java.lang.String}" $names="{user}" }method { $name="
- deviceAdded" $arguments="{fr.liglab.adele.icasa.device.GenericDevice}" 
- $names="{arg0}" }method { $name="deviceEvent" $arguments="{fr.liglab.ad
- ele.icasa.device.GenericDevice,java.lang.Object}" $names="{arg0,arg1}" 
- }method { $name="devicePropertyAdded" $arguments="{fr.liglab.adele.icas
- a.device.GenericDevice,java.lang.String}" $names="{arg0,arg1}" }method 
- { $name="devicePropertyModified" $arguments="{fr.liglab.adele.icasa.dev
- ice.GenericDevice,java.lang.String,java.lang.Object,java.lang.Object}" 
- $names="{device,propertyName,oldValue,newValue}" }method { $name="devic
- ePropertyRemoved" $arguments="{fr.liglab.adele.icasa.device.GenericDevi
- ce,java.lang.String}" $names="{arg0,arg1}" }method { $name="deviceRemov
- ed" $arguments="{fr.liglab.adele.icasa.device.GenericDevice}" $names="{
- arg0}" }method { $name="bindPresenceSensor" $arguments="{fr.liglab.adel
- e.icasa.device.presence.PresenceSensor,java.util.Map}" $names="{presenc
- eSensor,properties}" }method { $name="unbindPresenceSensor" $arguments=
- "{fr.liglab.adele.icasa.device.presence.PresenceSensor,java.util.Map}" 
- $names="{presenceSensor,properties}" }method { $name="momentOfTheDayHas
- Changed" $arguments="{org.example.time.MomentOfTheDay}" $names="{newMom
- entOfTheDay}" }method { $name="bindMomentOfTheDayService" $arguments="{
- org.example.time.MomentOfTheDayService,java.util.Map}" $names="{momentO
- fTheDayService,properties}" }method { $name="unbindMomentOfTheDayServic
- e" $arguments="{org.example.time.MomentOfTheDayService,java.util.Map}" 
- $names="{momentOfTheDayService,properties}" }}}
+ istener" }field { $name="AFTERNOON_ILLUMINANCE_FACTOR" $type="double" }
+ field { $name="EVENING_ILLUMINANCE_FACTOR" $type="double" }field { $nam
+ e="MORNING_ILLUMINANCE_FACTOR" $type="double" }field { $name="NIGHT_ILL
+ UMINANCE_FACTOR" $type="double" }field { $name="followMe" $type="org.ex
+ ample.follow.me.configuration.FollowMeConfiguration" }field { $name="mo
+ mentOfTheDayService" $type="org.example.time.MomentOfTheDayService[]" }
+ field { $name="personLocationService" $type="fr.liglab.adele.icasa.serv
+ ice.location.PersonLocationService" }field { $name="preferencesService"
+  $type="fr.liglab.adele.icasa.service.preferences.Preferences" }field {
+  $name="presenceSensor" $type="fr.liglab.adele.icasa.device.presence.Pr
+ esenceSensor[]" }method { $name="bindFollowMe" $arguments="{org.example
+ .follow.me.configuration.FollowMeConfiguration,java.util.Map}" $names="
+ {followMeConfiguration,properties}" }method { $name="unbindFollowMe" $a
+ rguments="{org.example.follow.me.configuration.FollowMeConfiguration,ja
+ va.util.Map}" $names="{followMeConfiguration,properties}" }method { $na
+ me="stop" }method { $name="start" }method { $name="setIlluminancePrefer
+ ence" $arguments="{org.example.follow.me.manager.IlluminanceGoal,java.l
+ ang.String}" $names="{illuminanceGoal,user}" }method { $name="getIllumi
+ nancePreference" $return="org.example.follow.me.manager.IlluminanceGoal
+ " }method { $name="setEnergySavingGoal" $arguments="{org.example.follow
+ .me.manager.EnergyGoal}" $names="{energyGoal}" }method { $name="getEner
+ gyGoal" $return="org.example.follow.me.manager.EnergyGoal" }method { $n
+ ame="setUserPreference" $arguments="{java.lang.String,java.lang.String,
+ float}" $names="{user,name,preference}" }method { $name="getUserPrefere
+ nce" $return="java.util.Set" $arguments="{java.lang.String}" $names="{u
+ ser}" }method { $name="deviceAdded" $arguments="{fr.liglab.adele.icasa.
+ device.GenericDevice}" $names="{arg0}" }method { $name="deviceEvent" $a
+ rguments="{fr.liglab.adele.icasa.device.GenericDevice,java.lang.Object}
+ " $names="{arg0,arg1}" }method { $name="devicePropertyAdded" $arguments
+ ="{fr.liglab.adele.icasa.device.GenericDevice,java.lang.String}" $names
+ ="{arg0,arg1}" }method { $name="devicePropertyModified" $arguments="{fr
+ .liglab.adele.icasa.device.GenericDevice,java.lang.String,java.lang.Obj
+ ect,java.lang.Object}" $names="{device,propertyName,oldValue,newValue}"
+  }method { $name="devicePropertyRemoved" $arguments="{fr.liglab.adele.i
+ casa.device.GenericDevice,java.lang.String}" $names="{arg0,arg1}" }meth
+ od { $name="deviceRemoved" $arguments="{fr.liglab.adele.icasa.device.Ge
+ nericDevice}" $names="{arg0}" }method { $name="bindPresenceSensor" $arg
+ uments="{fr.liglab.adele.icasa.device.presence.PresenceSensor,java.util
+ .Map}" $names="{presenceSensor,properties}" }method { $name="unbindPres
+ enceSensor" $arguments="{fr.liglab.adele.icasa.device.presence.Presence
+ Sensor,java.util.Map}" $names="{presenceSensor,properties}" }method { $
+ name="momentOfTheDayHasChanged" $arguments="{org.example.time.MomentOfT
+ heDay}" $names="{newMomentOfTheDay}" }method { $name="bindMomentOfTheDa
+ yService" $arguments="{org.example.time.MomentOfTheDayService,java.util
+ .Map}" $names="{momentOfTheDayService,properties}" }method { $name="unb
+ indMomentOfTheDayService" $arguments="{org.example.time.MomentOfTheDayS
+ ervice,java.util.Map}" $names="{momentOfTheDayService,properties}" }}}
 

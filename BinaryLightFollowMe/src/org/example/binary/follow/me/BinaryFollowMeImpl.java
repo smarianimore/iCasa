@@ -121,14 +121,10 @@ public class BinaryFollowMeImpl implements DeviceListener, FollowMeConfiguration
 		if (propertyName.equals(PresenceSensor.PRESENCE_SENSOR_SENSED_PRESENCE)) {
 
 			// get the location of the changing sensor:
-			String detectorLocation = (String) changingSensor.getPropertyValue(LOCATION_PROPERTY_NAME);
-			
+			String detectorLocation = (String) changingSensor.getPropertyValue(LOCATION_PROPERTY_NAME);	
 
 			System.out.println("The device with the serial number" + changingSensor.getSerialNumber() + " has changed");
 			System.out.println("This sensor is in the room :" + detectorLocation);
-
-			//Calcoliamo l'area della stanza
-			float area = zoneCalculator.getSurfaceInMeterSquare(detectorLocation);
 
 			if (!detectorLocation.equals(LOCATION_UNKNOWN)) {
 				// get the related binary lights

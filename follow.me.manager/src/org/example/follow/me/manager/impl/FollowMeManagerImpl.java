@@ -39,6 +39,15 @@ public class FollowMeManagerImpl implements FollowMeAdministration, DeviceListen
 
 	/** Field for momentOfTheDayService dependency */
 	private MomentOfTheDayService[] momentOfTheDayService;
+	
+    // There is no need of full illuminance in the morning 
+    private double MORNING_ILLUMINANCE_FACTOR = 0.5;
+    // In the afternoon the illuminance can be largely limited
+    private double AFTERNOON_ILLUMINANCE_FACTOR = 0.2;
+    // In the evening, the illuminance should be the best
+    private double EVENING_ILLUMINANCE_FACTOR = 1;
+    // In the night, there is no need to use the full illuminance
+    private double NIGHT_ILLUMINANCE_FACTOR = 0.8;
 
 	/** Bind Method for followMe dependency */
 	public void bindFollowMe(FollowMeConfiguration followMeConfiguration, Map properties) {
@@ -69,10 +78,9 @@ public class FollowMeManagerImpl implements FollowMeAdministration, DeviceListen
 		//Questo viene fatto ogni volta che il componente del manager parte (quindi all'inizio)
 		followMe.setMaximumNumberOfLightsToTurnOn(IlluminanceGoal.FULL.getNumberOfLightsToTurnOn());
 		followMe.setMaximumAllowedEnergyInRoom(250.0);
-		//this.setUserPreference("Paul", USER_PROP_ILLUMINANCE, "SOFT");
-		//this.setUserPreference("Jacob", USER_PROP_ILLUMINANCE, "FULL");
+		//this.setUserPreference("Paul", USER_PROP_ILLUMINANCE, (float) 100);
+		//this.setUserPreference("Jacob", USER_PROP_ILLUMINANCE, (float) 4000);
 
-		//momentOfTheDayService.register(this);
 
 	}
 
@@ -146,18 +154,21 @@ public class FollowMeManagerImpl implements FollowMeAdministration, DeviceListen
 			if (!detectorLocation.equals(LOCATION_UNKNOWN)) {
 
 				Set<String> peopleInZone = personLocationService.getPersonInZone(detectorLocation);
-
-				//Impostazione della luminosità come media delle preferenze degli utenti
-				float illuminanceUserBased = 0;
-				for (String person : peopleInZone) {
-					//Per ora utilizzo direttamente la funzione di libreria, dopo cambio per passare tramite il metodo
-					//di questa classe
-					illuminanceUserBased += (float) preferencesService.getUserPropertyValue(person,
-							USER_PROP_ILLUMINANCE);
+				if (peopleInZone.size() > 0) {
+					//Impostazione della luminosità come media delle preferenze degli utenti
+					float illuminanceUserBased = 0;
+					for (String person : peopleInZone) {
+						//Per ora utilizzo direttamente la funzione di libreria, dopo cambio per passare tramite il metodo
+						//di questa classe
+						illuminanceUserBased += (float) preferencesService.getUserPropertyValue(person, USER_PROP_ILLUMINANCE);
+						System.out.println("Se non c'è nessuna preferenza impostata ottengo: " + illuminanceUserBased);
+					}
+					if (illuminanceUserBased != 0) {
+						illuminanceUserBased = illuminanceUserBased / peopleInZone.size();
+						//Impostiamo l'illuminazione target che servirà al binary follow me
+						followMe.setTargetedIlluminance(illuminanceUserBased);
+					}
 				}
-				illuminanceUserBased = illuminanceUserBased / peopleInZone.size();
-				//Impostiamo l'illuminazione target che servirà al binary follow me
-				followMe.setTargetedIlluminance(illuminanceUserBased);
 			}
 
 		}
@@ -189,7 +200,19 @@ public class FollowMeManagerImpl implements FollowMeAdministration, DeviceListen
 	@Override
 	public void momentOfTheDayHasChanged(MomentOfTheDay newMomentOfTheDay) {
 		System.out.println("Nuovo MomentOfTheDay: " + newMomentOfTheDay);
-
+		String moment = newMomentOfTheDay.toString();
+		System.out.println(moment);
+		switch (moment) {
+			case "MORNING":
+				followMe.setTargetedIlluminance(MORNING_ILLUMINANCE_FACTOR * IlluminanceGoal.SOFT.getIlluminance());
+			case "AFTERNOON":
+				followMe.setTargetedIlluminance(AFTERNOON_ILLUMINANCE_FACTOR * IlluminanceGoal.MEDIUM.getIlluminance());
+			case "EVENING":
+				followMe.setTargetedIlluminance(EVENING_ILLUMINANCE_FACTOR * IlluminanceGoal.MEDIUM.getIlluminance());
+			case "NIGHT":
+				followMe.setTargetedIlluminance(NIGHT_ILLUMINANCE_FACTOR * IlluminanceGoal.FULL.getIlluminance());
+		}
+		
 	}
 
 	/** Bind Method for momentOfTheDayService dependency */
