@@ -4,6 +4,8 @@
     <provides specifications="fr.liglab.adele.icasa.service.scheduler.PeriodicRunnable"/>
     <callback method="start" transition="validate"/>
     <callback method="stop" transition="invalidate"/>
+    <provides specifications="org.example.time.MomentOfTheDayService"/>
+    <requires optional="true" specification="fr.liglab.adele.icasa.clockservice.Clock" field="clockService"/>
   </component>
   <instance component="MomentOfTheDay" name="MomentOfTheDay-1"/>
 </ipojo>

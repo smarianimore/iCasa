@@ -1,22 +1,23 @@
 package org.example.time;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.time.LocalTime;
 
 import fr.liglab.adele.icasa.service.scheduler.PeriodicRunnable;
+import fr.liglab.adele.icasa.clockservice.Clock;
 
 public class MomentOfTheDayImpl implements MomentOfTheDayService, PeriodicRunnable {
-
-	MomentOfTheDay currentMomentOfTheDay = MomentOfTheDay.NIGHT;
+	
+	MomentOfTheDay currentMomentOfTheDay;
 	List<MomentOfTheDayListener> momentOfTheDayListener = new ArrayList<MomentOfTheDayListener>(); //lista dei listener di tipo MomentOfTheDay
+	
+	/** Field for clockService dependency */
+	private Clock clockService;
 
 	@Override
 	public synchronized void run() {
-		System.out.println("Run called!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(momentOfTheDayListener);
-
 		// TODO : do something to check the current time of the day and see if
 		// it has changed
 		//Bisogna fare il getMomentOfTheDay e compararlo al currentMomentOfTheDay
@@ -42,12 +43,23 @@ public class MomentOfTheDayImpl implements MomentOfTheDayService, PeriodicRunnab
 
 	@Override
 	public TimeUnit getUnit() {
-		return TimeUnit.SECONDS;
+		return TimeUnit.HOURS;
 	}
-
+	
 	@Override
 	public MomentOfTheDay getMomentOfTheDay() {
-		int hour = LocalTime.now().getHour();
+		//Get the current time in ms from the clock service via the clock service dependency
+		long currentMillisTime = clockService.currentTimeMillis();
+		
+		//Instantiate a Calendar object and get the hours of the day
+		//Calendar.HOUR -> 0-12 hours format
+		//Calendar.HOUR_OF_DAY -> 0-24 hours format
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(currentMillisTime);
+
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		System.out.println("Current hour: " + hour);
+		
 		return MomentOfTheDay.getCorrespondingMoment(hour);
 	}
 
@@ -65,7 +77,7 @@ public class MomentOfTheDayImpl implements MomentOfTheDayService, PeriodicRunnab
 
 	/** Component Lifecycle Method */
 	public void stop() {
-		// TODO: Add your implementation code here
+		System.out.println("MomentOfTheDay stopping...");
 	}
 
 	/** Component Lifecycle Method */

@@ -45,18 +45,22 @@ Import-Package: fr.liglab.adele.icasa, fr.liglab.adele.icasa.access, fr.
 iPOJO-Components: instance { $component="MomentOfTheDay" $name="MomentOf
  TheDay-1" }component { $classname="org.example.time.MomentOfTheDayImpl"
   $name="MomentOfTheDay" provides { $specifications="fr.liglab.adele.ica
- sa.service.scheduler.PeriodicRunnable" }callback { $method="start" $tra
- nsition="validate" }callback { $method="stop" $transition="invalidate" 
- }manipulation { $classname="org.example.time.MomentOfTheDayImpl" interf
- ace { $name="org.example.time.MomentOfTheDayService" }interface { $name
- ="fr.liglab.adele.icasa.service.scheduler.PeriodicRunnable" }field { $n
- ame="currentMomentOfTheDay" $type="org.example.time.MomentOfTheDay" }fi
- eld { $name="momentOfTheDayListener" $type="java.util.List" }method { $
- name="run" }method { $name="getPeriod" $return="long" }method { $name="
- getUnit" $return="java.util.concurrent.TimeUnit" }method { $name="getMo
- mentOfTheDay" $return="org.example.time.MomentOfTheDay" }method { $name
- ="register" $arguments="{org.example.time.MomentOfTheDayListener}" $nam
- es="{listener}" }method { $name="unregister" $arguments="{org.example.t
- ime.MomentOfTheDayListener}" $names="{listener}" }method { $name="stop"
-  }method { $name="start" }}}
+ sa.service.scheduler.PeriodicRunnable" }provides { $specifications="org
+ .example.time.MomentOfTheDayService" }callback { $method="start" $trans
+ ition="validate" }callback { $method="stop" $transition="invalidate" }r
+ equires { $optional="true" $specification="fr.liglab.adele.icasa.clocks
+ ervice.Clock" $field="clockService" }manipulation { $classname="org.exa
+ mple.time.MomentOfTheDayImpl" interface { $name="org.example.time.Momen
+ tOfTheDayService" }interface { $name="fr.liglab.adele.icasa.service.sch
+ eduler.PeriodicRunnable" }field { $name="clockService" $type="fr.liglab
+ .adele.icasa.clockservice.Clock" }field { $name="currentMomentOfTheDay"
+  $type="org.example.time.MomentOfTheDay" }field { $name="momentOfTheDay
+ Listener" $type="java.util.List" }method { $name="run" }method { $name=
+ "getPeriod" $return="long" }method { $name="getUnit" $return="java.util
+ .concurrent.TimeUnit" }method { $name="getMomentOfTheDay" $return="org.
+ example.time.MomentOfTheDay" }method { $name="register" $arguments="{or
+ g.example.time.MomentOfTheDayListener}" $names="{listener}" }method { $
+ name="unregister" $arguments="{org.example.time.MomentOfTheDayListener}
+ " $names="{listener}" }method { $name="stop" }method { $name="start" }}
+ }
 

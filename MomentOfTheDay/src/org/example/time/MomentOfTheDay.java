@@ -11,8 +11,9 @@ public enum MomentOfTheDay {
      * @return the corresponding moment of the day
      */
     static MomentOfTheDay getCorrespondingMoment(int hour) {
-        //assert ((0 <= startHour) && (startHour <= 24));
-        if (6 <= hour && hour < 12)
+    	if (0 <= hour && hour < 6)
+    		return MomentOfTheDay.NIGHT;
+    	else if (6 <= hour && hour < 12)
         	return MomentOfTheDay.MORNING;
         else if (12 <= hour && hour < 18)
         	return MomentOfTheDay.AFTERNOON;

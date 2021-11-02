@@ -20,8 +20,6 @@ import fr.liglab.adele.icasa.device.presence.PresenceSensor;
 public class FollowMeManagerImpl implements FollowMeAdministration, DeviceListener, MomentOfTheDayListener {
 	/** Field for followMe dependency */
 	private FollowMeConfiguration followMe;
-	/** Injected field for the service property goal */
-	private String goal;
 
 	/** Field for preferencesService dependency */
 	private Preferences preferencesService;
@@ -35,7 +33,6 @@ public class FollowMeManagerImpl implements FollowMeAdministration, DeviceListen
 	* User preferences for illuminance
 	**/
 	public static final String USER_PROP_ILLUMINANCE = "illuminance";
-	private IlluminanceGoal correspondingIlluminance;
 
 	/** Field for presenceSensor dependency */
 	private PresenceSensor[] presenceSensor;
@@ -197,7 +194,7 @@ public class FollowMeManagerImpl implements FollowMeAdministration, DeviceListen
 
 	/** Bind Method for momentOfTheDayService dependency */
 	public void bindMomentOfTheDayService(MomentOfTheDayService momentOfTheDayService, Map properties) {
-		System.out.println("Bind Moment of the day service");
+		System.out.println("Bind MomentOfTheDay service");
 		for (MomentOfTheDayService s : this.momentOfTheDayService) {
 			s.register(this);
 		}
@@ -205,7 +202,7 @@ public class FollowMeManagerImpl implements FollowMeAdministration, DeviceListen
 
 	/** Unbind Method for momentOfTheDayService dependency */
 	public void unbindMomentOfTheDayService(MomentOfTheDayService momentOfTheDayService, Map properties) {
-		// TODO: Add your implementation code here
+		System.out.println("Unbind MomentOfTheDay service");
 		for (MomentOfTheDayService s : this.momentOfTheDayService) {
 			s.unregister(this);
 		}
