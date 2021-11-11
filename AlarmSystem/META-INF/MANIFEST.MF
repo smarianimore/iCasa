@@ -1,0 +1,106 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: AlarmSystem
+Bundle-SymbolicName: AlarmSystem
+Bundle-Version: 1.0.0.qualifier
+Export-Package: iCasa.alarm.system.configuration
+Bundle-RequiredExecutionEnvironment: JavaSE-9
+Created-By: iPOJO 1.12.1
+Import-Package: fr.liglab.adele.icasa, fr.liglab.adele.icasa.access, fr.
+ liglab.adele.icasa.access.command, fr.liglab.adele.icasa.application, f
+ r.liglab.adele.icasa.application.impl, fr.liglab.adele.icasa.applicatio
+ n.impl.command, fr.liglab.adele.icasa.application.remote, fr.liglab.ade
+ le.icasa.application.remote.util, fr.liglab.adele.icasa.clockservice, f
+ r.liglab.adele.icasa.clockservice.impl, fr.liglab.adele.icasa.clockserv
+ ice.util, fr.liglab.adele.icasa.command, fr.liglab.adele.icasa.command.
+ handler, fr.liglab.adele.icasa.commands, fr.liglab.adele.icasa.commands
+ .impl, fr.liglab.adele.icasa.common, fr.liglab.adele.icasa.common.impl,
+  fr.liglab.adele.icasa.common.xml.utils, fr.liglab.adele.icasa.dependen
+ cy.manager.exception, fr.liglab.adele.icasa.device, fr.liglab.adele.ica
+ sa.device.bathroomscale, fr.liglab.adele.icasa.device.box, fr.liglab.ad
+ ele.icasa.device.button, fr.liglab.adele.icasa.device.button.simulated,
+  fr.liglab.adele.icasa.device.doorWindow, fr.liglab.adele.icasa.device.
+ gasSensor, fr.liglab.adele.icasa.device.light, fr.liglab.adele.icasa.de
+ vice.manager, fr.liglab.adele.icasa.device.motion, fr.liglab.adele.icas
+ a.device.power, fr.liglab.adele.icasa.device.presence, fr.liglab.adele.
+ icasa.device.security, fr.liglab.adele.icasa.device.settopbox, fr.ligla
+ b.adele.icasa.device.sound, fr.liglab.adele.icasa.device.sprinkler, fr.
+ liglab.adele.icasa.device.temperature, fr.liglab.adele.icasa.device.uti
+ l, fr.liglab.adele.icasa.exception, fr.liglab.adele.icasa.frontend.serv
+ ices, fr.liglab.adele.icasa.frontend.services.rest, fr.liglab.adele.ica
+ sa.frontend.services.utils, fr.liglab.adele.icasa.listener, fr.liglab.a
+ dele.icasa.location, fr.liglab.adele.icasa.location.impl, fr.liglab.ade
+ le.icasa.location.util, fr.liglab.adele.icasa.remote.wisdom, fr.liglab.
+ adele.icasa.remote.wisdom.util, fr.liglab.adele.icasa.service.location,
+  fr.liglab.adele.icasa.service.preferences, fr.liglab.adele.icasa.servi
+ ce.scheduler, fr.liglab.adele.icasa.service.zone.dimension.calculator, 
+ fr.liglab.adele.icasa.service.zone.size.calculator, fr.liglab.adele.ica
+ sa.simulator, fr.liglab.adele.icasa.simulator.listener, fr.liglab.adele
+ .icasa.simulator.listener.util, fr.liglab.adele.icasa.simulator.remote.
+ wisdom.util, fr.liglab.adele.icasa.simulator.script.executor, fr.liglab
+ .adele.icasa.simulator.services, org.apache.felix.ipojo;version="[1.12.
+ 1,2.0.0)", org.apache.felix.ipojo.architecture;version="[1.12.1,2.0.0)"
+ , org.json, org.osgi.service.cm;version=1.2, org.osgi.service.log;versi
+ on=1.3
+iPOJO-Components: instance { $component="AlarmSystem" $name="AlarmSystem
+ -1" }component { $classname="iCasa.alarm.system.AlarmSystemImpl" $name=
+ "AlarmSystem" requires { $aggregate="true" $optional="true" $specificat
+ ion="fr.liglab.adele.icasa.device.light.BinaryLight" $field="binaryLigh
+ ts" callback { $method="bindBinaryLights" $type="bind" }callback { $met
+ hod="unbindBinaryLights" $type="unbind" }}requires { $aggregate="true" 
+ $optional="true" $specification="fr.liglab.adele.icasa.device.light.Dim
+ merLight" $field="dimmerLights" callback { $method="bindDimmerLights" $
+ type="bind" }callback { $method="unbindDimmerLights" $type="unbind" }}r
+ equires { $aggregate="true" $optional="true" $specification="fr.liglab.
+ adele.icasa.device.presence.PresenceSensor" $field="presenceSensors" ca
+ llback { $method="bindPresenceSensors" $type="bind" }callback { $method
+ ="unbindPresenceSensors" $type="unbind" }}requires { $aggregate="true" 
+ $optional="true" $specification="fr.liglab.adele.icasa.device.security.
+ Siren" $field="sirens" callback { $method="bindSirens" $type="bind" }ca
+ llback { $method="unbindSirens" $type="unbind" }}callback { $method="st
+ art" $transition="validate" }callback { $method="stop" $transition="inv
+ alidate" }provides { $specifications="iCasa.alarm.system.configuration.
+ AlarmSystemConfiguration" property { $field="AuthorizedPeopleIn" $name=
+ "AuthorizedPeopleIn" $type="java.lang.Boolean" }property { $field="Unau
+ thorizedPeopleIn" $name="UnauthorizedPeopleIn" $type="java.lang.Boolean
+ " }property { $field="AlarmTrigger" $name="AlarmTrigger" $type="java.la
+ ng.Boolean" }}manipulation { $classname="iCasa.alarm.system.AlarmSystem
+ Impl" interface { $name="iCasa.alarm.system.configuration.AlarmSystemCo
+ nfiguration" }field { $name="AlarmTrigger" $type="java.lang.Boolean" }f
+ ield { $name="AuthorizedPeopleIn" $type="java.lang.Boolean" }field { $n
+ ame="UnauthorizedPeopleIn" $type="java.lang.Boolean" }field { $name="bi
+ naryLights" $type="fr.liglab.adele.icasa.device.light.BinaryLight[]" }f
+ ield { $name="dimmerLights" $type="fr.liglab.adele.icasa.device.light.D
+ immerLight[]" }field { $name="presenceSensors" $type="fr.liglab.adele.i
+ casa.device.presence.PresenceSensor[]" }field { $name="sirens" $type="f
+ r.liglab.adele.icasa.device.security.Siren[]" }method { $name="bindSire
+ ns" $arguments="{fr.liglab.adele.icasa.device.security.Siren,java.util.
+ Map}" $names="{siren,properties}" }method { $name="unbindSirens" $argum
+ ents="{fr.liglab.adele.icasa.device.security.Siren,java.util.Map}" $nam
+ es="{siren,properties}" }method { $name="bindBinaryLights" $arguments="
+ {fr.liglab.adele.icasa.device.light.BinaryLight,java.util.Map}" $names=
+ "{binaryLight,properties}" }method { $name="unbindBinaryLights" $argume
+ nts="{fr.liglab.adele.icasa.device.light.BinaryLight,java.util.Map}" $n
+ ames="{binaryLight,properties}" }method { $name="bindPresenceSensors" $
+ arguments="{fr.liglab.adele.icasa.device.presence.PresenceSensor,java.u
+ til.Map}" $names="{presenceSensor,properties}" }method { $name="unbindP
+ resenceSensors" $arguments="{fr.liglab.adele.icasa.device.presence.Pres
+ enceSensor,java.util.Map}" $names="{presenceSensor,properties}" }method
+  { $name="bindDimmerLights" $arguments="{fr.liglab.adele.icasa.device.l
+ ight.DimmerLight,java.util.Map}" $names="{dimmerLight,properties}" }met
+ hod { $name="unbindDimmerLights" $arguments="{fr.liglab.adele.icasa.dev
+ ice.light.DimmerLight,java.util.Map}" $names="{dimmerLight,properties}"
+  }method { $name="stop" }method { $name="start" }method { $name="turnOn
+ AllLights" }method { $name="turnOffAllLights" }method { $name="turnOnLi
+ ghtsWherePeopleIn" }method { $name="turnOnSirens" }method { $name="actu
+ alizeValues" }method { $name="getDimmerLightFromLocation" $return="java
+ .util.List" $arguments="{java.lang.String}" $names="{location}" }method
+  { $name="getBinaryLightFromLocation" $return="java.util.List" $argumen
+ ts="{java.lang.String}" $names="{location}" }method { $name="setAuthori
+ zedPeopleIn" $arguments="{boolean}" $names="{AuthorizedPeopleIn}" }meth
+ od { $name="getAuthorizedPeopleIn" $return="boolean" }method { $name="s
+ etUnauthorizedPeopleIn" $arguments="{boolean}" $names="{UnauthorizedPeo
+ pleIn}" }method { $name="getUnauthorizedPeopleIn" $return="boolean" }me
+ thod { $name="setAlarmTrigger" $arguments="{boolean}" $names="{AlarmTri
+ gger}" }method { $name="getAlarmTrigger" $return="boolean" }}}
+

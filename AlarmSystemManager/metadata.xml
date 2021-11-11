@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="iCasa.alarm.system.manager.AlarmSystemManagerImpl" name="AlarmSystemManager">
+    <requires specification="iCasa.alarm.system.configuration.AlarmSystemConfiguration" field="alarmSystem"/>
+    <requires optional="true" specification="fr.liglab.adele.icasa.service.location.PersonLocationService" field="personLocationService"/>
+    <callback method="start" transition="validate"/>
+    <callback method="stop" transition="invalidate"/>
+  </component>
+  <instance component="AlarmSystemManager" name="AlarmSystemManager-1"/>
+</ipojo>
