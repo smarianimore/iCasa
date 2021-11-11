@@ -2,9 +2,13 @@
 .recommenders
 AlarmSystem
 AlarmSystemManager
+BinaryLightFollowMe
 coding
 CommandTest
+follow.me.manager
+FollowMeCommand
 hello.client
 hello.english.provider
 hello.service
 hello.using.service
+MomentOfTheDay

@@ -9,7 +9,7 @@ import fr.liglab.adele.icasa.service.scheduler.PeriodicRunnable;
 import fr.liglab.adele.icasa.clockservice.Clock;
 
 public class MomentOfTheDayImpl implements MomentOfTheDayService, PeriodicRunnable {
-	
+
 	MomentOfTheDay currentMomentOfTheDay;
 	List<MomentOfTheDayListener> momentOfTheDayListener = new ArrayList<MomentOfTheDayListener>(); //lista dei listener di tipo MomentOfTheDay
 	

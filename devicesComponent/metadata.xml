@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="iCasa.devices.component.devicesComponentImpl" name="devicesComponent">
+    <callback method="start" transition="validate"/>
+    <callback method="stop" transition="invalidate"/>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.presence.PresenceSensor" field="presenceSensors">
+      <callback method="bindPresenceSensors" type="bind"/>
+      <callback method="unbindPresenceSensors" type="unbind"/>
+    </requires>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.light.BinaryLight" field="binaryLights">
+      <callback method="bindBinaryLights" type="bind"/>
+      <callback method="unbindBinaryLights" type="unbind"/>
+    </requires>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.temperature.Heater" field="heaters">
+      <callback method="bindHeaters" type="bind"/>
+      <callback method="unbindHeaters" type="unbind"/>
+    </requires>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.temperature.Thermometer" field="thermometers">
+      <callback method="bindThermometers" type="bind"/>
+      <callback method="unbindThermometers" type="unbind"/>
+    </requires>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.doorWindow.DoorWindowSensor" field="windows">
+      <callback method="bindWindows" type="bind"/>
+      <callback method="unbindWindows" type="unbind"/>
+    </requires>
+    <requires optional="true" specification="fr.liglab.adele.icasa.device.PowerObservable" field="powerConsumption"/>
+    <provides specifications="iCasa.devices.component.configuration.SystemServiceConfiguration"/>
+  </component>
+  <instance component="devicesComponent" name="devicesComponent-1"/>
+</ipojo>

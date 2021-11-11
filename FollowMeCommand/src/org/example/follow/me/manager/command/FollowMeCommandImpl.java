@@ -18,6 +18,7 @@ import fr.liglab.adele.icasa.command.handler.CommandProvider;
 //Use the handler command and declare the command as a command provider. The
 //namespace is used to prevent name collision.
 @CommandProvider(namespace = "followme")
+
 public class FollowMeCommandImpl {
 
 	// Declare a dependency to a FollowMeAdministration service
