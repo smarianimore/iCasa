@@ -49,13 +49,13 @@ iPOJO-Components: instance { $component="datasetManager" $name="datasetM
   $specifications="iCasa.dataset.manager.services.datasetManagerServices
  " }manipulation { $classname="iCasa.dataset.manager.datasetManagerImpl"
   interface { $name="iCasa.dataset.manager.services.datasetManagerServic
- es" }method { $name="stop" }method { $name="start" }method { $name="set
- Header" $arguments="{org.json.JSONObject,java.io.FileWriter,java.io.Buf
- feredReader}" $names="{snapshot,csvWriter,br}" }method { $name="buildHe
- ader" $return="java.util.List" $arguments="{org.json.JSONObject}" $name
- s="{snapshot}" }method { $name="buildRow" $return="java.util.List" $arg
- uments="{org.json.JSONObject}" $names="{snapshot}" }method { $name="wri
- teRow" $arguments="{java.util.List,java.io.FileWriter}" $names="{row,cs
- vWriter}" }method { $name="buildAndWrite" $arguments="{org.json.JSONObj
- ect}" $names="{snapshot}" }}}
+ es" }method { $name="setHeader" $arguments="{org.json.JSONObject,java.i
+ o.FileWriter,java.io.BufferedReader}" $names="{snapshot,csvWriter,br}" 
+ }method { $name="buildHeader" $return="java.util.List" $arguments="{org
+ .json.JSONObject}" $names="{snapshot}" }method { $name="buildRow" $retu
+ rn="java.util.List" $arguments="{org.json.JSONObject}" $names="{snapsho
+ t}" }method { $name="writeRow" $arguments="{java.util.List,java.io.File
+ Writer}" $names="{row,csvWriter}" }method { $name="buildAndWrite" $argu
+ ments="{org.json.JSONObject}" $names="{snapshot}" }method { $name="stop
+ " }method { $name="start" }}}
 

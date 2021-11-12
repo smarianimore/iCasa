@@ -17,16 +17,6 @@ public class SystemManagerImpl implements PeriodicRunnable {
 	/** Field for datasetManager dependency */
 	private datasetManagerServices datasetManager;
 
-	/** Component Lifecycle Method */
-	public void stop() {
-		// TODO: Add your implementation code here
-	}
-
-	/** Component Lifecycle Method */
-	public void start() {
-		// TODO: Add your implementation code here
-	}
-
 	@Override
 	public void run() {
 		System.out.println("Snapshot del sistema");
@@ -37,7 +27,7 @@ public class SystemManagerImpl implements PeriodicRunnable {
 			System.out.println(snapshot);
 
 			datasetManager.buildAndWrite(snapshot);
-
+			
 			System.out.println("Scrittura sul dataset eseguita");
 
 		} catch (JSONException | IOException e) {
@@ -55,6 +45,16 @@ public class SystemManagerImpl implements PeriodicRunnable {
 	@Override
 	public TimeUnit getUnit() {
 		return TimeUnit.HOURS;
+	}
+	
+	/** Component Lifecycle Method */
+	public void stop() {
+		// TODO: Add your implementation code here
+	}
+
+	/** Component Lifecycle Method */
+	public void start() {
+		// TODO: Add your implementation code here
 	}
 
 }

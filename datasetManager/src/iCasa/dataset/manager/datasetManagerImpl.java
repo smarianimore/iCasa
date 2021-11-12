@@ -14,18 +14,8 @@ import iCasa.dataset.manager.services.datasetManagerServices;
 
 public class datasetManagerImpl implements datasetManagerServices {
 
-	/** Component Lifecycle Method */
-	public void stop() {
-		// TODO: Add your implementation code here
-	}
-
-	/** Component Lifecycle Method */
-	public void start() {
-		// TODO: Add your implementation code here
-	}
-
 	@Override
-	public void setHeader(JSONObject snapshot, FileWriter csvWriter, BufferedReader br) throws IOException, JSONException {
+	public synchronized void setHeader(JSONObject snapshot, FileWriter csvWriter, BufferedReader br) throws IOException, JSONException {
 		
 		//The header is inserted only if the file is empty    
 		if (br.readLine() == null) {
@@ -40,7 +30,7 @@ public class datasetManagerImpl implements datasetManagerServices {
 	}
 	
 	@Override
-	public List<String> buildHeader(JSONObject snapshot) throws JSONException {
+	public synchronized List<String> buildHeader(JSONObject snapshot) throws JSONException {
 
 		//Read the value of a row from the snapshot and make them in a list
 		List<String> row = new ArrayList<String>();
@@ -56,7 +46,7 @@ public class datasetManagerImpl implements datasetManagerServices {
 	}
 	
 	@Override
-	public List<String> buildRow(JSONObject snapshot) throws JSONException {
+	public synchronized List<String> buildRow(JSONObject snapshot) throws JSONException {
 		
 		//Read the value of a row from the snapshot and make them in a list
 		List<String> row = new ArrayList<String>();
@@ -72,16 +62,17 @@ public class datasetManagerImpl implements datasetManagerServices {
 	}
 	
 	@Override
-	public void writeRow(List<String> row, FileWriter csvWriter) throws IOException {
+	public synchronized void writeRow(List<String> row, FileWriter csvWriter) throws IOException {
 		
 		if (!row.isEmpty()) {
 			csvWriter.append(String.join(",", row));
 		    csvWriter.append("\n");
 		}
+
 	}
 	
 	@Override
-	public void buildAndWrite(JSONObject snapshot) throws JSONException, IOException {
+	public synchronized void buildAndWrite(JSONObject snapshot) throws JSONException, IOException {
 		//Open the file in append mode for writer and for reader
 		FileWriter csvWriter = new FileWriter("dataset.csv", true);
 		BufferedReader br = new BufferedReader(new FileReader("dataset.csv")); 
@@ -92,11 +83,21 @@ public class datasetManagerImpl implements datasetManagerServices {
 		//Build and write the row on the dataset
 		List<String> row = this.buildRow(snapshot);
 		this.writeRow(row, csvWriter);
-		System.out.println("ROW: " + row);
 		
 		//Close the pointers
 		br.close();
 		csvWriter.flush();
 		csvWriter.close();
 	}
+	
+	/** Component Lifecycle Method */
+	public void stop() {
+		// TODO: Add your implementation code here
+	}
+
+	/** Component Lifecycle Method */
+	public void start() {
+		// TODO: Add your implementation code here
+	}
+
 }

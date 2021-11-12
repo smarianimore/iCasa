@@ -55,8 +55,8 @@ iPOJO-Components: instance { $component="SystemManager" $name="SystemMan
  liglab.adele.icasa.service.scheduler.PeriodicRunnable" }field { $name="
  datasetManager" $type="iCasa.dataset.manager.services.datasetManagerSer
  vices" }field { $name="devicesConfiguration" $type="iCasa.devices.compo
- nent.configuration.SystemServiceConfiguration" }method { $name="stop" }
- method { $name="start" }method { $name="run" }method { $name="getPeriod
- " $return="long" }method { $name="getUnit" $return="java.util.concurren
- t.TimeUnit" }}}
+ nent.configuration.SystemServiceConfiguration" }method { $name="run" }m
+ ethod { $name="getPeriod" $return="long" }method { $name="getUnit" $ret
+ urn="java.util.concurrent.TimeUnit" }method { $name="stop" }method { $n
+ ame="start" }}}
 

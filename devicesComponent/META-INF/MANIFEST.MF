@@ -64,39 +64,42 @@ iPOJO-Components: instance { $component="devicesComponent" $name="device
  rWindow.DoorWindowSensor" $field="windows" callback { $method="bindWind
  ows" $type="bind" }callback { $method="unbindWindows" $type="unbind" }}
  requires { $optional="true" $specification="fr.liglab.adele.icasa.devic
- e.PowerObservable" $field="powerConsumption" }provides { $specification
- s="iCasa.devices.component.configuration.SystemServiceConfiguration" }m
- anipulation { $classname="iCasa.devices.component.devicesComponentImpl"
-  interface { $name="iCasa.devices.component.configuration.SystemService
- Configuration" }field { $name="binaryLights" $type="fr.liglab.adele.ica
- sa.device.light.BinaryLight[]" }field { $name="heaters" $type="fr.ligla
- b.adele.icasa.device.temperature.Heater[]" }field { $name="powerConsump
- tion" $type="fr.liglab.adele.icasa.device.PowerObservable" }field { $na
- me="presenceSensors" $type="fr.liglab.adele.icasa.device.presence.Prese
- nceSensor[]" }field { $name="thermometers" $type="fr.liglab.adele.icasa
- .device.temperature.Thermometer[]" }field { $name="windows" $type="fr.l
- iglab.adele.icasa.device.doorWindow.DoorWindowSensor[]" }method { $name
- ="stop" }method { $name="start" }method { $name="bindPresenceSensors" $
- arguments="{fr.liglab.adele.icasa.device.presence.PresenceSensor,java.u
- til.Map}" $names="{presenceSensor,properties}" }method { $name="unbindP
- resenceSensors" $arguments="{fr.liglab.adele.icasa.device.presence.Pres
- enceSensor,java.util.Map}" $names="{presenceSensor,properties}" }method
-  { $name="bindWindows" $arguments="{fr.liglab.adele.icasa.device.doorWi
- ndow.DoorWindowSensor,java.util.Map}" $names="{doorWindowSensor,propert
- ies}" }method { $name="unbindWindows" $arguments="{fr.liglab.adele.icas
- a.device.doorWindow.DoorWindowSensor,java.util.Map}" $names="{doorWindo
- wSensor,properties}" }method { $name="bindBinaryLights" $arguments="{fr
- .liglab.adele.icasa.device.light.BinaryLight,java.util.Map}" $names="{b
- inaryLight,properties}" }method { $name="unbindBinaryLights" $arguments
- ="{fr.liglab.adele.icasa.device.light.BinaryLight,java.util.Map}" $name
- s="{binaryLight,properties}" }method { $name="bindHeaters" $arguments="
- {fr.liglab.adele.icasa.device.temperature.Heater,java.util.Map}" $names
- ="{heater,properties}" }method { $name="unbindHeaters" $arguments="{fr.
- liglab.adele.icasa.device.temperature.Heater,java.util.Map}" $names="{h
- eater,properties}" }method { $name="bindThermometers" $arguments="{fr.l
- iglab.adele.icasa.device.temperature.Thermometer,java.util.Map}" $names
- ="{thermometer,properties}" }method { $name="unbindThermometers" $argum
- ents="{fr.liglab.adele.icasa.device.temperature.Thermometer,java.util.M
- ap}" $names="{thermometer,properties}" }method { $name="takeSnapshot" $
- return="org.json.JSONObject" }}}
+ e.PowerObservable" $field="powerConsumption" }requires { $optional="tru
+ e" $specification="fr.liglab.adele.icasa.clockservice.Clock" $field="cl
+ ockService" }provides { $specifications="iCasa.devices.component.config
+ uration.SystemServiceConfiguration" }manipulation { $classname="iCasa.d
+ evices.component.devicesComponentImpl" interface { $name="iCasa.devices
+ .component.configuration.SystemServiceConfiguration" }field { $name="bi
+ naryLights" $type="fr.liglab.adele.icasa.device.light.BinaryLight[]" }f
+ ield { $name="clockService" $type="fr.liglab.adele.icasa.clockservice.C
+ lock" }field { $name="heaters" $type="fr.liglab.adele.icasa.device.temp
+ erature.Heater[]" }field { $name="powerConsumption" $type="fr.liglab.ad
+ ele.icasa.device.PowerObservable" }field { $name="presenceSensors" $typ
+ e="fr.liglab.adele.icasa.device.presence.PresenceSensor[]" }field { $na
+ me="thermometers" $type="fr.liglab.adele.icasa.device.temperature.Therm
+ ometer[]" }field { $name="windows" $type="fr.liglab.adele.icasa.device.
+ doorWindow.DoorWindowSensor[]" }method { $name="stop" }method { $name="
+ start" }method { $name="bindPresenceSensors" $arguments="{fr.liglab.ade
+ le.icasa.device.presence.PresenceSensor,java.util.Map}" $names="{presen
+ ceSensor,properties}" }method { $name="unbindPresenceSensors" $argument
+ s="{fr.liglab.adele.icasa.device.presence.PresenceSensor,java.util.Map}
+ " $names="{presenceSensor,properties}" }method { $name="bindWindows" $a
+ rguments="{fr.liglab.adele.icasa.device.doorWindow.DoorWindowSensor,jav
+ a.util.Map}" $names="{doorWindowSensor,properties}" }method { $name="un
+ bindWindows" $arguments="{fr.liglab.adele.icasa.device.doorWindow.DoorW
+ indowSensor,java.util.Map}" $names="{doorWindowSensor,properties}" }met
+ hod { $name="bindBinaryLights" $arguments="{fr.liglab.adele.icasa.devic
+ e.light.BinaryLight,java.util.Map}" $names="{binaryLight,properties}" }
+ method { $name="unbindBinaryLights" $arguments="{fr.liglab.adele.icasa.
+ device.light.BinaryLight,java.util.Map}" $names="{binaryLight,propertie
+ s}" }method { $name="bindHeaters" $arguments="{fr.liglab.adele.icasa.de
+ vice.temperature.Heater,java.util.Map}" $names="{heater,properties}" }m
+ ethod { $name="unbindHeaters" $arguments="{fr.liglab.adele.icasa.device
+ .temperature.Heater,java.util.Map}" $names="{heater,properties}" }metho
+ d { $name="bindThermometers" $arguments="{fr.liglab.adele.icasa.device.
+ temperature.Thermometer,java.util.Map}" $names="{thermometer,properties
+ }" }method { $name="unbindThermometers" $arguments="{fr.liglab.adele.ic
+ asa.device.temperature.Thermometer,java.util.Map}" $names="{thermometer
+ ,properties}" }method { $name="takeSnapshot" $return="org.json.JSONObje
+ ct" }}}
 

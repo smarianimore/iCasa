@@ -25,6 +25,7 @@
     </requires>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.PowerObservable" field="powerConsumption"/>
     <provides specifications="iCasa.devices.component.configuration.SystemServiceConfiguration"/>
+    <requires optional="true" specification="fr.liglab.adele.icasa.clockservice.Clock" field="clockService"/>
   </component>
   <instance component="devicesComponent" name="devicesComponent-1"/>
 </ipojo>

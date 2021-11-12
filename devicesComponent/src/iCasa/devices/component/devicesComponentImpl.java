@@ -7,11 +7,14 @@ import fr.liglab.adele.icasa.device.temperature.Thermometer;
 import iCasa.devices.component.configuration.SystemServiceConfiguration;
 import fr.liglab.adele.icasa.device.doorWindow.DoorWindowSensor;
 import fr.liglab.adele.icasa.device.PowerObservable;
+
+import java.sql.Timestamp;
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import fr.liglab.adele.icasa.clockservice.Clock;
 
 public class devicesComponentImpl implements SystemServiceConfiguration {
 
@@ -27,6 +30,8 @@ public class devicesComponentImpl implements SystemServiceConfiguration {
 	private Heater[] heaters;
 	/** Field for thermometers dependency */
 	private Thermometer[] thermometers;
+	/** Field for clockService dependency */
+	private Clock clockService;
 
 	/** Component Lifecycle Method */
 	public void stop() {
@@ -67,7 +72,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration {
 	public void unbindBinaryLights(BinaryLight binaryLight, Map properties) {
 		// TODO: Add your implementation code here
 	}
-	
+
 	/** Bind Method for heaters dependency */
 	public void bindHeaters(Heater heater, Map properties) {
 		// TODO: Add your implementation code here
@@ -94,65 +99,70 @@ public class devicesComponentImpl implements SystemServiceConfiguration {
 	 */
 	@Override
 	public JSONObject takeSnapshot() throws JSONException {
-		//Aggiungere un controllo che permette di fare lo snapshot solo se lo stato del dispositivo non è fault?
+		//Aggiungere un controllo che permette di fare lo snapshot solo se lo stato del dispositivo non è fault ed è attivo
 
-		//Fare lo snapshot significa salvare lo stato delle variabili di interesse
+		//The snapshot variables will have the values of the variables of the system
 		JSONObject snapshot = new JSONObject();
+
+		//TIMESTAMP (used as id)
+		JSONObject JSONtimestamp = new JSONObject();
+		long currentMillisTime = clockService.currentTimeMillis();
+		Timestamp timestamp = new Timestamp(currentMillisTime);
+		JSONtimestamp.put("timestamp", timestamp);
+		snapshot.put("timestamp", JSONtimestamp);
 
 		//PRESENCE SENSORS STATE
 		JSONObject JSONpresenceSensors = new JSONObject();
 		for (PresenceSensor presence : presenceSensors) {
 			boolean value = (boolean) presence.getPropertyValue("presenceSensor.sensedPresence");
 			String location = (String) presence.getPropertyValue("Location");
-			JSONpresenceSensors.put(location.toString(), value);
+			JSONpresenceSensors.put(location.toString(), value ? 1 : 0);
 		}
 		snapshot.put("presenceSensors", JSONpresenceSensors);
 
-//		//BINARY LIGHTS STATE
-//		JSONObject JSONbinaryLights = new JSONObject();
-//		for (BinaryLight binLight : binaryLights) {
-//			boolean value = (boolean) binLight.getPropertyValue("binaryLight.powerStatus");
-//			String location = (String) binLight.getPropertyValue("Location");
-//			JSONbinaryLights.put(location.toString(), value);
-//		}
-//		snapshot.put("binaryLights", JSONbinaryLights);
-//
-//		//THERMOMETERS STATE
-//		JSONObject JSONthermometer = new JSONObject();
-//		for (Thermometer thermo : thermometers) {
-//			double value = (double) thermo.getPropertyValue("thermometer.currentTemperature");
-//			String location = (String) thermo.getPropertyValue("Location");
-//			JSONthermometer.put(location.toString(), value);
-//		}
-//		snapshot.put("thermometers", JSONthermometer);
-//
-//		//WINDOWS STATE
-//		JSONObject JSONwindow = new JSONObject();
-//		for (DoorWindowSensor window : windows) {
-//			boolean value = (boolean) window.getPropertyValue("doorWindowSensor.opneningDetection");
-//			String location = (String) window.getPropertyValue("Location");
-//			JSONwindow.put(location.toString(), value);
-//		}
-//		snapshot.put("windows", JSONwindow);
-//
-//		//HEATER STATE
-//		JSONObject JSONheater = new JSONObject();
-//		for (Heater heat : heaters) {
-//			double value = (double) heat.getPropertyValue("heater.powerLevel");
-//			String location = (String) heat.getPropertyValue("Location");
-//			JSONheater.put(location.toString(), value);
-//		}
-//		snapshot.put("heaters", JSONheater);
-//
-//		//POWER CONSUMPTION STATE
-//		JSONObject JSONconsumption = new JSONObject();
-//		double value = (double) powerConsumption.getCurrentConsumption();
-//		JSONconsumption.put("Total", value);
-//		snapshot.put("powerConsumption", JSONconsumption);
+		//BINARY LIGHTS STATE
+		JSONObject JSONbinaryLights = new JSONObject();
+		for (BinaryLight binLight : binaryLights) {
+			boolean value = (boolean) binLight.getPropertyValue("binaryLight.powerStatus");
+			String location = (String) binLight.getPropertyValue("Location");
+			JSONbinaryLights.put(location.toString(), value ? 1 : 0);
+		}
+		snapshot.put("binaryLights", JSONbinaryLights);
+
+		//THERMOMETERS STATE
+		JSONObject JSONthermometer = new JSONObject();
+		for (Thermometer thermo : thermometers) {
+			double value = (double) thermo.getPropertyValue("thermometer.currentTemperature");
+			String location = (String) thermo.getPropertyValue("Location");
+			JSONthermometer.put(location.toString(), value);
+		}
+		snapshot.put("thermometers", JSONthermometer);
+
+		//WINDOWS STATE
+		JSONObject JSONwindow = new JSONObject();
+		for (DoorWindowSensor window : windows) {
+			boolean value = (boolean) window.getPropertyValue("doorWindowSensor.opneningDetection");
+			String location = (String) window.getPropertyValue("Location");
+			JSONwindow.put(location.toString(), value ? 1 : 0);
+		}
+		snapshot.put("windows", JSONwindow);
+
+		//HEATER STATE
+		JSONObject JSONheater = new JSONObject();
+		for (Heater heat : heaters) {
+			double value = (double) heat.getPropertyValue("heater.powerLevel");
+			String location = (String) heat.getPropertyValue("Location");
+			JSONheater.put(location.toString(), value);
+		}
+		snapshot.put("heaters", JSONheater);
+
+		//POWER CONSUMPTION STATE
+		JSONObject JSONconsumption = new JSONObject();
+		double value = (double) powerConsumption.getCurrentConsumption();
+		JSONconsumption.put("Total", value);
+		snapshot.put("powerConsumption", JSONconsumption);
 
 		return snapshot;
 	}
-
-
 
 }

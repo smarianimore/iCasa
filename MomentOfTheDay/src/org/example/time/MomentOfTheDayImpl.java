@@ -50,7 +50,7 @@ public class MomentOfTheDayImpl implements MomentOfTheDayService, PeriodicRunnab
 	public MomentOfTheDay getMomentOfTheDay() {
 		//Get the current time in ms from the clock service via the clock service dependency
 		long currentMillisTime = clockService.currentTimeMillis();
-		
+
 		//Instantiate a Calendar object and get the hours of the day
 		//Calendar.HOUR -> 0-12 hours format
 		//Calendar.HOUR_OF_DAY -> 0-24 hours format
