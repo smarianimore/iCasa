@@ -1,0 +1,61 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DatasetManager
+Bundle-SymbolicName: datasetManager
+Bundle-Version: 1.0.0.qualifier
+Export-Package: iCasa.dataset.manager.services
+Bundle-RequiredExecutionEnvironment: JavaSE-9
+Created-By: iPOJO 1.12.1
+Import-Package: fr.liglab.adele.icasa, fr.liglab.adele.icasa.access, fr.
+ liglab.adele.icasa.access.command, fr.liglab.adele.icasa.application, f
+ r.liglab.adele.icasa.application.impl, fr.liglab.adele.icasa.applicatio
+ n.impl.command, fr.liglab.adele.icasa.application.remote, fr.liglab.ade
+ le.icasa.application.remote.util, fr.liglab.adele.icasa.clockservice, f
+ r.liglab.adele.icasa.clockservice.impl, fr.liglab.adele.icasa.clockserv
+ ice.util, fr.liglab.adele.icasa.command, fr.liglab.adele.icasa.command.
+ handler, fr.liglab.adele.icasa.commands, fr.liglab.adele.icasa.commands
+ .impl, fr.liglab.adele.icasa.common, fr.liglab.adele.icasa.common.impl,
+  fr.liglab.adele.icasa.common.xml.utils, fr.liglab.adele.icasa.dependen
+ cy.manager.exception, fr.liglab.adele.icasa.device, fr.liglab.adele.ica
+ sa.device.bathroomscale, fr.liglab.adele.icasa.device.box, fr.liglab.ad
+ ele.icasa.device.button, fr.liglab.adele.icasa.device.button.simulated,
+  fr.liglab.adele.icasa.device.doorWindow, fr.liglab.adele.icasa.device.
+ gasSensor, fr.liglab.adele.icasa.device.light, fr.liglab.adele.icasa.de
+ vice.manager, fr.liglab.adele.icasa.device.motion, fr.liglab.adele.icas
+ a.device.power, fr.liglab.adele.icasa.device.presence, fr.liglab.adele.
+ icasa.device.security, fr.liglab.adele.icasa.device.settopbox, fr.ligla
+ b.adele.icasa.device.sound, fr.liglab.adele.icasa.device.sprinkler, fr.
+ liglab.adele.icasa.device.temperature, fr.liglab.adele.icasa.device.uti
+ l, fr.liglab.adele.icasa.exception, fr.liglab.adele.icasa.frontend.serv
+ ices, fr.liglab.adele.icasa.frontend.services.rest, fr.liglab.adele.ica
+ sa.frontend.services.utils, fr.liglab.adele.icasa.listener, fr.liglab.a
+ dele.icasa.location, fr.liglab.adele.icasa.location.impl, fr.liglab.ade
+ le.icasa.location.util, fr.liglab.adele.icasa.remote.wisdom, fr.liglab.
+ adele.icasa.remote.wisdom.util, fr.liglab.adele.icasa.service.location,
+  fr.liglab.adele.icasa.service.preferences, fr.liglab.adele.icasa.servi
+ ce.scheduler, fr.liglab.adele.icasa.service.zone.dimension.calculator, 
+ fr.liglab.adele.icasa.service.zone.size.calculator, fr.liglab.adele.ica
+ sa.simulator, fr.liglab.adele.icasa.simulator.listener, fr.liglab.adele
+ .icasa.simulator.listener.util, fr.liglab.adele.icasa.simulator.remote.
+ wisdom.util, fr.liglab.adele.icasa.simulator.script.executor, fr.liglab
+ .adele.icasa.simulator.services, org.apache.felix.ipojo;version="[1.12.
+ 1,2.0.0)", org.apache.felix.ipojo.architecture;version="[1.12.1,2.0.0)"
+ , org.json, org.osgi.service.cm;version=1.2, org.osgi.service.log;versi
+ on=1.3
+iPOJO-Components: instance { $component="datasetManager" $name="datasetM
+ anager-1" }component { $classname="iCasa.dataset.manager.datasetManager
+ Impl" $name="datasetManager" callback { $method="start" $transition="va
+ lidate" }callback { $method="stop" $transition="invalidate" }provides {
+  $specifications="iCasa.dataset.manager.services.datasetManagerServices
+ " }manipulation { $classname="iCasa.dataset.manager.datasetManagerImpl"
+  interface { $name="iCasa.dataset.manager.services.datasetManagerServic
+ es" }method { $name="setHeader" $arguments="{org.json.JSONObject,java.i
+ o.FileWriter,java.io.BufferedReader}" $names="{snapshot,csvWriter,br}" 
+ }method { $name="buildHeader" $return="java.util.List" $arguments="{org
+ .json.JSONObject}" $names="{snapshot}" }method { $name="buildRow" $retu
+ rn="java.util.List" $arguments="{org.json.JSONObject}" $names="{snapsho
+ t}" }method { $name="writeRow" $arguments="{java.util.List,java.io.File
+ Writer}" $names="{row,csvWriter}" }method { $name="buildAndWrite" $argu
+ ments="{org.json.JSONObject}" $names="{snapshot}" }method { $name="stop
+ " }method { $name="start" }}}
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="iCasa.api.manager.APIManagerImpl" name="APIManager">
+    <callback method="start" transition="validate"/>
+    <callback method="stop" transition="invalidate"/>
+    <provides specifications="iCasa.api.manager.configuration.APIManagerConfiguration"/>
+  </component>
+  <instance component="APIManager" name="APIManager-1"/>
+</ipojo>

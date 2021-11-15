@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="iCasa.devices.component.devicesComponentImpl" name="devicesComponent">
+    <callback method="start" transition="validate"/>
+    <callback method="stop" transition="invalidate"/>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.presence.PresenceSensor" field="presenceSensors">
+      <callback method="bindPresenceSensors" type="bind"/>
+      <callback method="unbindPresenceSensors" type="unbind"/>
+    </requires>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.light.BinaryLight" field="binaryLights">
+      <callback method="bindBinaryLights" type="bind"/>
+      <callback method="unbindBinaryLights" type="unbind"/>
+    </requires>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.temperature.Heater" field="heaters">
+      <callback method="bindHeaters" type="bind"/>
+      <callback method="unbindHeaters" type="unbind"/>
+    </requires>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.temperature.Thermometer" field="thermometers">
+      <callback method="bindThermometers" type="bind"/>
+      <callback method="unbindThermometers" type="unbind"/>
+    </requires>
+    <requires optional="true" specification="fr.liglab.adele.icasa.device.doorWindow.DoorWindowSensor" field="windows"/>
+    <requires optional="true" specification="fr.liglab.adele.icasa.device.PowerObservable" field="powerConsumption"/>
+    <provides specifications="iCasa.devices.component.configuration.SystemServiceConfiguration">
+      <property field="powerConsumptionThreshold" name="powerConsumptionThreshold" type="java.lang.Double"/>
+      <property field="indoorTemperatureThreshold" name="indoorTemperatureThreshold" type="java.lang.Double"/>
+      <property field="outdoorTemperatureThreshold" name="outdoorTemperatureThreshold" type="java.lang.Double"/>
+      <property field="windowOpened" name="windowOpened" type="java.lang.Boolean"/>
+    </provides>
+    <requires optional="true" specification="fr.liglab.adele.icasa.clockservice.Clock" field="clockService"/>
+  </component>
+  <instance component="devicesComponent" name="devicesComponent-1"/>
+</ipojo>

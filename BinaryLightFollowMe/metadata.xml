@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="org.example.binary.follow.me.BinaryFollowMeImpl" name="BinaryFollowMe">
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.light.BinaryLight" field="binaryLigths">
+      <callback method="bindBinaryLigths" type="bind"/>
+      <callback method="unbindBinaryLigths" type="unbind"/>
+    </requires>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.presence.PresenceSensor" field="presenceSensors">
+      <callback method="bindPresenceSensors" type="bind"/>
+      <callback method="unbindPresenceSensors" type="unbind"/>
+    </requires>
+    <callback method="start" transition="validate"/>
+    <callback method="stop" transition="invalidate"/>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.light.DimmerLight" field="dimmerLights">
+      <callback method="bindDimmerLights" type="bind"/>
+      <callback method="unbindDimmerLights" type="unbind"/>
+    </requires>
+    <provides specifications="org.example.follow.me.configuration.FollowMeConfiguration">
+      <property field="maximumNumberOfLightsToTurnOn" name="maximumNumberOfLightsToTurnOn" type="java.lang.Integer"/>
+      <property field="MaximumAllowedEnergyInRoom" name="MaximumAllowedEnergyInRoom" type="java.lang.Double"/>
+      <property field="targetedIlluminance" name="targetedIlluminance" type="java.lang.Double"/>
+    </provides>
+    <requires optional="true" specification="fr.liglab.adele.icasa.service.zone.size.calculator.ZoneSizeCalculator" field="zoneCalculator"/>
+  </component>
+  <instance component="BinaryFollowMe" name="my.first.follow.me"/>
+</ipojo>

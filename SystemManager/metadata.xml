@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="iCasa.system.manager.SystemManagerImpl" name="SystemManager">
+    <callback method="start" transition="validate"/>
+    <callback method="stop" transition="invalidate"/>
+    <requires optional="true" specification="iCasa.devices.component.configuration.SystemServiceConfiguration" field="devicesConfiguration"/>
+    <provides specifications="fr.liglab.adele.icasa.service.scheduler.PeriodicRunnable"/>
+    <requires optional="true" specification="iCasa.dataset.manager.services.datasetManagerServices" field="datasetManager"/>
+    <requires optional="true" specification="iCasa.api.manager.configuration.APIManagerConfiguration" field="apiManager"/>
+  </component>
+  <instance component="SystemManager" name="SystemManager-1"/>
+</ipojo>

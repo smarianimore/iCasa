@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="iCasa.dataset.manager.datasetManagerImpl" name="datasetManager">
+    <callback method="start" transition="validate"/>
+    <callback method="stop" transition="invalidate"/>
+    <provides specifications="iCasa.dataset.manager.services.datasetManagerServices"/>
+  </component>
+  <instance component="datasetManager" name="datasetManager-1"/>
+</ipojo>
