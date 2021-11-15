@@ -2,13 +2,18 @@ package iCasa.devices.component;
 
 import fr.liglab.adele.icasa.device.presence.PresenceSensor;
 import fr.liglab.adele.icasa.device.light.BinaryLight;
+import fr.liglab.adele.icasa.device.light.DimmerLight;
 import fr.liglab.adele.icasa.device.temperature.Heater;
 import fr.liglab.adele.icasa.device.temperature.Thermometer;
 import iCasa.devices.component.configuration.SystemServiceConfiguration;
 import fr.liglab.adele.icasa.device.doorWindow.DoorWindowSensor;
+import fr.liglab.adele.icasa.device.DeviceListener;
+import fr.liglab.adele.icasa.device.GenericDevice;
 import fr.liglab.adele.icasa.device.PowerObservable;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -16,14 +21,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import fr.liglab.adele.icasa.clockservice.Clock;
 
-public class devicesComponentImpl implements SystemServiceConfiguration {
+public class devicesComponentImpl implements SystemServiceConfiguration, DeviceListener {
 
 	/** Field for presenceSensors dependency */
 	private PresenceSensor[] presenceSensors;
 	/** Field for binaryLights dependency */
 	private BinaryLight[] binaryLights;
 	/** Field for windows dependency */
-	private DoorWindowSensor[] windows;
+	private DoorWindowSensor windows;
 	/** Field for powerConsumption dependency */
 	private PowerObservable powerConsumption;
 	/** Field for heaters dependency */
@@ -32,10 +37,24 @@ public class devicesComponentImpl implements SystemServiceConfiguration {
 	private Thermometer[] thermometers;
 	/** Field for clockService dependency */
 	private Clock clockService;
+	/** Injected field for the service property outdoorTemperatureThreshold */
+	private Double outdoorTemperatureThreshold;
+	/** Injected field for the service property indoorTemperatureThreshold */
+	private Double indoorTemperatureThreshold;
+	/** Injected field for the service property powerConsumptionThreshold */
+	private Double powerConsumptionThreshold;
+	/** Injected field for the service property windowOpened */
+	private Boolean windowOpened;
+
+	public static final String LOCATION_PROPERTY_NAME = "Location";
+	public static final String LOCATION_UNKNOWN = "unknown";
+
 
 	/** Component Lifecycle Method */
 	public void stop() {
-		// TODO: Add your implementation code here
+		for (PresenceSensor sensor : presenceSensors) {
+			sensor.removeListener(this);
+		}
 	}
 
 	/** Component Lifecycle Method */
@@ -45,22 +64,12 @@ public class devicesComponentImpl implements SystemServiceConfiguration {
 
 	/** Bind Method for presenceSensors dependency */
 	public void bindPresenceSensors(PresenceSensor presenceSensor, Map properties) {
-		// TODO: Add your implementation code here
+		presenceSensor.addListener(this);
 	}
 
 	/** Unbind Method for presenceSensors dependency */
 	public void unbindPresenceSensors(PresenceSensor presenceSensor, Map properties) {
-		// TODO: Add your implementation code here
-	}
-
-	/** Bind Method for windows dependency */
-	public void bindWindows(DoorWindowSensor doorWindowSensor, Map properties) {
-		// TODO: Add your implementation code here
-	}
-
-	/** Unbind Method for windows dependency */
-	public void unbindWindows(DoorWindowSensor doorWindowSensor, Map properties) {
-		// TODO: Add your implementation code here
+		presenceSensor.removeListener(this);
 	}
 
 	/** Bind Method for binaryLights dependency */
@@ -118,7 +127,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration {
 			String location = (String) presence.getPropertyValue("Location");
 			JSONpresenceSensors.put(location.toString(), value ? 1 : 0);
 		}
-		snapshot.put("presenceSensors", JSONpresenceSensors);
+		snapshot.put("Pr", JSONpresenceSensors);
 
 		//BINARY LIGHTS STATE
 		JSONObject JSONbinaryLights = new JSONObject();
@@ -127,42 +136,202 @@ public class devicesComponentImpl implements SystemServiceConfiguration {
 			String location = (String) binLight.getPropertyValue("Location");
 			JSONbinaryLights.put(location.toString(), value ? 1 : 0);
 		}
-		snapshot.put("binaryLights", JSONbinaryLights);
+		snapshot.put("L", JSONbinaryLights);
 
 		//THERMOMETERS STATE
 		JSONObject JSONthermometer = new JSONObject();
 		for (Thermometer thermo : thermometers) {
 			double value = (double) thermo.getPropertyValue("thermometer.currentTemperature");
 			String location = (String) thermo.getPropertyValue("Location");
-			JSONthermometer.put(location.toString(), value);
+			JSONthermometer.put(location.toString(), Math.round(value));
 		}
-		snapshot.put("thermometers", JSONthermometer);
+		snapshot.put("T", JSONthermometer);
 
-		//WINDOWS STATE
+		//WINDOW STATE
 		JSONObject JSONwindow = new JSONObject();
-		for (DoorWindowSensor window : windows) {
-			boolean value = (boolean) window.getPropertyValue("doorWindowSensor.opneningDetection");
-			String location = (String) window.getPropertyValue("Location");
-			JSONwindow.put(location.toString(), value ? 1 : 0);
-		}
-		snapshot.put("windows", JSONwindow);
+		boolean valueOpen = (boolean) windows.getPropertyValue("doorWindowSensor.opneningDetection");
+		String locationWindow = (String) windows.getPropertyValue("Location");
+		JSONwindow.put(locationWindow.toString(), valueOpen ? 1 : 0);
+		snapshot.put("W", JSONwindow);
 
 		//HEATER STATE
 		JSONObject JSONheater = new JSONObject();
 		for (Heater heat : heaters) {
 			double value = (double) heat.getPropertyValue("heater.powerLevel");
 			String location = (String) heat.getPropertyValue("Location");
-			JSONheater.put(location.toString(), value);
+			JSONheater.put(location.toString(), Math.round(value));
 		}
-		snapshot.put("heaters", JSONheater);
+		snapshot.put("H", JSONheater);
 
 		//POWER CONSUMPTION STATE
 		JSONObject JSONconsumption = new JSONObject();
 		double value = (double) powerConsumption.getCurrentConsumption();
-		JSONconsumption.put("Total", value);
-		snapshot.put("powerConsumption", JSONconsumption);
+		JSONconsumption.put("Total", Math.round(value));
+		snapshot.put("Pow", JSONconsumption);
 
 		return snapshot;
+	}
+
+	//Bisogna creare un metodo che in base al valore dei threshold vadi ad impostare il valore dei dispositivi
+	@Override
+	public void setValues() {
+
+		//POWER CONSUMPTION: in base alla power consumption accendiamo o meno i riscaldamenti, tenendo conto dell'energia
+		//consumata già dalle luci che sono accese
+		double maxPower = this.powerConsumptionThreshold;
+		double powerOfLights = 0;
+		for (BinaryLight binLight : binaryLights) {
+			powerOfLights += (double) binLight.getPropertyValue("powerObservable.currentConsumption");
+		}
+		maxPower -= powerOfLights;
+		double powerForOneHeater = Math.round(maxPower / 4);
+		for (Heater heat : heaters) {
+			heat.setPropertyValue("heater.powerLevel", powerForOneHeater);
+		}
+
+		//If the window is opened the outdoor temperature influences the indoor temperature
+		if (this.windowOpened) {
+			double temperature = (this.indoorTemperatureThreshold + this.outdoorTemperatureThreshold) / 2;
+			for (Thermometer therm : thermometers) {
+				String location = (String) therm.getPropertyValue("Location");
+				//Let's assign the mean temperature only to the indoor thermometers
+				if (location != "outdoor")
+					therm.setPropertyValue("thermometer.currentTemperature", temperature);
+			}
+		//If the window is closed the outdoor temperature does not influences the indoor one
+		}else {
+			for (Thermometer therm : thermometers) {
+				String location = (String) therm.getPropertyValue("Location");
+				if (location != "outdoor")
+					therm.setPropertyValue("thermometer.currentTemperature", this.indoorTemperatureThreshold);
+				else
+					therm.setPropertyValue("thermometer.currentTemperature", this.outdoorTemperatureThreshold);
+			}
+		}
+		
+		//Bisogna capire se la temperatura assegnata viene mantenuta o se a prevale è la misurazione effettuata dai termometri
+		//ad ogni iterazione
+
+	}
+
+	@Override
+	public Double getOutdoorTemperatureThreshold() {
+		return this.outdoorTemperatureThreshold;
+	}
+
+	@Override
+	public void setOutdoorTemperatureThreshold(double outdoorTemperatureThreshold) {
+		this.outdoorTemperatureThreshold = outdoorTemperatureThreshold;
+	}
+
+	@Override
+	public Double getIndoorTemperatureThreshold() {
+		return this.indoorTemperatureThreshold;
+	}
+
+	@Override
+	public void setIndoorTemperatureThreshold(double indoorTemperatureThreshold) {
+		this.indoorTemperatureThreshold = indoorTemperatureThreshold;
+	}
+
+	@Override
+	public Double getPowerConsumptionThreshold() {
+		return this.powerConsumptionThreshold;
+	}
+
+	@Override
+	public void setPowerConsumptionThreshold(double powerConsumptionThreshold) {
+		this.powerConsumptionThreshold = powerConsumptionThreshold;
+	}
+	
+	@Override
+	public Boolean getWindowOpened() {
+		return this.windowOpened;
+	}
+
+	@Override
+	public void setWindowOpened(boolean windowOpened) {
+		this.windowOpened = windowOpened;
+	}
+
+	@Override
+	public void deviceAdded(GenericDevice arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deviceEvent(GenericDevice arg0, Object arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void devicePropertyAdded(GenericDevice arg0, String arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void devicePropertyModified(GenericDevice device, String propertyName, Object oldValue, Object newValue) {
+		//we assume that we listen only to presence sensor events (otherwise there is a bug)  
+		assert device instanceof PresenceSensor : "device must be a presence sensors only";
+
+		//based on that assumption we can cast the generic device without checking via instanceof
+		PresenceSensor changingSensor = (PresenceSensor) device;
+
+		// check the change is related to presence sensing
+		if (propertyName.equals(PresenceSensor.PRESENCE_SENSOR_SENSED_PRESENCE)) {
+
+			// get the location of the changing sensor:
+			String detectorLocation = (String) changingSensor.getPropertyValue(LOCATION_PROPERTY_NAME);
+
+			System.out.println("The device with the serial number" + changingSensor.getSerialNumber() + " has changed");
+			System.out.println("This sensor is in the room :" + detectorLocation);
+
+			if (!detectorLocation.equals(LOCATION_UNKNOWN)) {
+				// get the related binary lights
+				List<BinaryLight> sameLocationLigths = getBinaryLightFromLocation(detectorLocation);
+
+				for (BinaryLight binaryLight : sameLocationLigths) {
+					if (changingSensor.getSensedPresence()) {
+						binaryLight.turnOn();
+					} else {
+						binaryLight.turnOff();
+					}
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Return all BinaryLight from the given location
+	 * 
+	 * @param location
+	 *            : the given location
+	 * @return the list of matching BinaryLights
+	 */
+	private synchronized List<BinaryLight> getBinaryLightFromLocation(String location) {
+		List<BinaryLight> binaryLightsLocation = new ArrayList<BinaryLight>();
+		for (BinaryLight binLight : binaryLights) {
+			if (binLight.getPropertyValue(LOCATION_PROPERTY_NAME).equals(location)) {
+				binaryLightsLocation.add(binLight);
+			}
+		}
+		return binaryLightsLocation;
+	}
+
+	@Override
+	public void devicePropertyRemoved(GenericDevice arg0, String arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deviceRemoved(GenericDevice arg0) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

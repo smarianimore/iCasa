@@ -56,7 +56,7 @@ iPOJO-Components: instance { $component="SystemManager" $name="SystemMan
  datasetManager" $type="iCasa.dataset.manager.services.datasetManagerSer
  vices" }field { $name="devicesConfiguration" $type="iCasa.devices.compo
  nent.configuration.SystemServiceConfiguration" }method { $name="run" }m
- ethod { $name="getPeriod" $return="long" }method { $name="getUnit" $ret
- urn="java.util.concurrent.TimeUnit" }method { $name="stop" }method { $n
- ame="start" }}}
+ ethod { $name="setVariablesRandom" }method { $name="getPeriod" $return=
+ "long" }method { $name="getUnit" $return="java.util.concurrent.TimeUnit
+ " }method { $name="stop" }method { $name="start" }}}
 

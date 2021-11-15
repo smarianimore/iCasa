@@ -38,7 +38,7 @@ public class datasetManagerImpl implements datasetManagerServices {
 		for (String deviceName : JSONObject.getNames(snapshot)) {
 			JSONObject deviceLocationValues = snapshot.getJSONObject(deviceName);
 			for (String location : JSONObject.getNames(deviceLocationValues)) {
-				row.add(deviceName + "." + location);
+				row.add(deviceName + "." + location.substring(0, 3));
 			}
 		}
 
