@@ -25,6 +25,8 @@ public interface SystemServiceConfiguration {
 	public void setPowerConsumptionThreshold(double powerConsumptionThreshold);
 	public Boolean getWindowOpened();
 	public void setWindowOpened(boolean windowOpened);
+	public Double getHeaterLevel();
+	public void setHeaterLevel(double heaterLevel);
 	
 	
 }

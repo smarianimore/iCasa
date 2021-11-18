@@ -24,7 +24,7 @@ public class SystemManagerImpl implements PeriodicRunnable {
 	/** Field for apiManager dependency */
 	private APIManagerConfiguration apiManager;
 
-	/* Main method of the Manager */
+	/* MAIN PROGRAM */
 	@Override
 	public void run() {
 		System.out.println("Snapshot del sistema");
@@ -59,7 +59,7 @@ public class SystemManagerImpl implements PeriodicRunnable {
 		double rndIndoorT = rangeMinIndoorT + (rangeMaxIndoorT - rangeMinIndoorT) * r.nextDouble();
 		devicesConfiguration.setIndoorTemperatureThreshold(rndIndoorT);
 		
-		System.out.println("Indoor given temperature :" + rndIndoorT);
+		System.out.println("Indoor random temperature: " + rndIndoorT);
 
 		//OUTDOOR TEMPERATURE THRESHOLD
 		double rangeMinOutdoorT = 273.15;
@@ -67,17 +67,28 @@ public class SystemManagerImpl implements PeriodicRunnable {
 		double rndOutdoorT = rangeMinOutdoorT + (rangeMaxOutdoorT - rangeMinOutdoorT) * r.nextDouble();
 		devicesConfiguration.setOutdoorTemperatureThreshold(rndOutdoorT);
 		
-		System.out.println("Outdoor given temperature :" + rndOutdoorT);
+		System.out.println("Outdoor random temperature: " + rndOutdoorT);
 
 		//POWER CONSUMPTION THRESHOLD
-		double rangeMinPowerConsumption = 1200;
+		double rangeMinPowerConsumption = 0;
 		double rangeMaxPowerConsumption = 4000;
 		double rndPowerConsumption = rangeMinPowerConsumption
-				+ (rangeMaxPowerConsumption - rangeMinPowerConsumption) * r.nextDouble();
+				+ (rangeMaxPowerConsumption - rangeMinPowerConsumption) * r.nextDouble();	
 		devicesConfiguration.setPowerConsumptionThreshold(rndPowerConsumption);
-
+		
+		//HEATER LEVEL
+		double rangeMinHeaterLeavel = 0;
+		double rangeMaxHeaterLeavel = 1000;
+		double rndHeaterLevel = rangeMinHeaterLeavel + (rangeMaxHeaterLeavel - rangeMinHeaterLeavel) * r.nextDouble();
+		devicesConfiguration.setHeaterLevel(rndHeaterLevel);
+		
+		System.out.println("Random Heater Level: " + rndHeaterLevel);
+		
 		//WINDOW OPENED/CLOSED
-		devicesConfiguration.setWindowOpened(r.nextBoolean());
+		boolean opening = r.nextBoolean();
+		devicesConfiguration.setWindowOpened(opening);
+		
+		System.out.println(opening ? "Finestra aperta" : "Finestra chiusa");
 		
 		//MOVE PERSON RANDOMLY
 		List<String> zones = new ArrayList<String>();
@@ -86,10 +97,10 @@ public class SystemManagerImpl implements PeriodicRunnable {
 		persons = apiManager.getPersonsList();
 		//move each person in a random location chosen from the list
 		for (String person : persons) {
-			String zone = zones.get(r.nextInt(zones.size() + 1));
+			String zone = zones.get(r.nextInt(zones.size()));
 			apiManager.movePerson(person, zone);
-			System.out.println("Person " + person + " moved to " + zone);
-		}
+			//System.out.println("Person " + person + " moved to " + zone);
+		} 
 
 		//Call the method of the device component in order to set the variables
 		devicesConfiguration.setValues();
@@ -113,7 +124,6 @@ public class SystemManagerImpl implements PeriodicRunnable {
 
 	/** Component Lifecycle Method */
 	public void start() {
-		// TODO: Add your implementation code here
 	}
 
 }

@@ -26,6 +26,7 @@
       <property field="indoorTemperatureThreshold" name="indoorTemperatureThreshold" type="java.lang.Double"/>
       <property field="outdoorTemperatureThreshold" name="outdoorTemperatureThreshold" type="java.lang.Double"/>
       <property field="windowOpened" name="windowOpened" type="java.lang.Boolean"/>
+      <property field="heaterLevel" name="heaterLevel" type="java.lang.Double"/>
     </provides>
     <requires optional="true" specification="fr.liglab.adele.icasa.clockservice.Clock" field="clockService"/>
   </component>
