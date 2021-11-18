@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<behavior startdate="27/10/2011-00:00:00" factor="1440">
+
+	<!-- Zone Section -->
+
+	<create-zone  id ="outdoor" leftX ="59" topY ="-11" bottomZ ="0" X-Length ="591" Y-Length ="35" Z-Length ="179"/>
+	<add-zone-variable zoneId="outdoor" variable="Temperature" />
+	<modify-zone-variable zoneId="outdoor" variable="Temperature" value="293.15" />
+	<add-zone-variable zoneId="outdoor" variable="Area" />
+	<modify-zone-variable zoneId="outdoor" variable="Area" value="4.054260161151888" />
+	<add-zone-variable zoneId="outdoor" variable="Electricity" />
+	<modify-zone-variable zoneId="outdoor" variable="Electricity" value="0.0" />
+	<add-zone-variable zoneId="outdoor" variable="Volume" />
+	<modify-zone-variable zoneId="outdoor" variable="Volume" value="10.159976133970156" />
+	<add-zone-variable zoneId="outdoor" variable="Illuminance" />
+	<modify-zone-variable zoneId="outdoor" variable="Illuminance" value="200.0" />
+
+	<create-zone  id ="livingroom" leftX ="404" topY ="37" bottomZ ="0" X-Length ="246" Y-Length ="328" Z-Length ="179"/>
+	<add-zone-variable zoneId="livingroom" variable="Temperature" />
+	<modify-zone-variable zoneId="livingroom" variable="Temperature" value="293.15" />
+	<add-zone-variable zoneId="livingroom" variable="Area" />
+	<modify-zone-variable zoneId="livingroom" variable="Area" value="15.81484805255127" />
+	<add-zone-variable zoneId="livingroom" variable="Electricity" />
+	<modify-zone-variable zoneId="livingroom" variable="Electricity" value="0.0" />
+	<add-zone-variable zoneId="livingroom" variable="Volume" />
+	<modify-zone-variable zoneId="livingroom" variable="Volume" value="39.632009883310914" />
+	<add-zone-variable zoneId="livingroom" variable="Illuminance" />
+	<modify-zone-variable zoneId="livingroom" variable="Illuminance" value="200.0" />
+
+	<create-zone  id ="kitchen" leftX ="408" topY ="375" bottomZ ="0" X-Length ="242" Y-Length ="194" Z-Length ="179"/>
+	<add-zone-variable zoneId="kitchen" variable="Temperature" />
+	<modify-zone-variable zoneId="kitchen" variable="Temperature" value="293.15" />
+	<add-zone-variable zoneId="kitchen" variable="Area" />
+	<modify-zone-variable zoneId="kitchen" variable="Area" value="9.201808302490235" />
+	<add-zone-variable zoneId="kitchen" variable="Electricity" />
+	<modify-zone-variable zoneId="kitchen" variable="Electricity" value="0.0" />
+	<add-zone-variable zoneId="kitchen" variable="Volume" />
+	<modify-zone-variable zoneId="kitchen" variable="Volume" value="23.059731992163773" />
+	<add-zone-variable zoneId="kitchen" variable="Illuminance" />
+	<modify-zone-variable zoneId="kitchen" variable="Illuminance" value="200.0" />
+
+	<create-zone  id ="bathroom" leftX ="61" topY ="34" bottomZ ="0" X-Length ="246" Y-Length ="324" Z-Length ="179"/>
+	<add-zone-variable zoneId="bathroom" variable="Temperature" />
+	<modify-zone-variable zoneId="bathroom" variable="Temperature" value="293.15" />
+	<add-zone-variable zoneId="bathroom" variable="Area" />
+	<modify-zone-variable zoneId="bathroom" variable="Area" value="15.621984893051149" />
+	<add-zone-variable zoneId="bathroom" variable="Electricity" />
+	<modify-zone-variable zoneId="bathroom" variable="Electricity" value="0.0" />
+	<add-zone-variable zoneId="bathroom" variable="Volume" />
+	<modify-zone-variable zoneId="bathroom" variable="Volume" value="39.14869479751075" />
+	<add-zone-variable zoneId="bathroom" variable="Illuminance" />
+	<modify-zone-variable zoneId="bathroom" variable="Illuminance" value="200.0" />
+
+	<create-zone  id ="bedroom" leftX ="57" topY ="372" bottomZ ="0" X-Length ="254" Y-Length ="199" Z-Length ="179"/>
+	<add-zone-variable zoneId="bedroom" variable="Temperature" />
+	<modify-zone-variable zoneId="bedroom" variable="Temperature" value="293.15" />
+	<add-zone-variable zoneId="bedroom" variable="Area" />
+	<modify-zone-variable zoneId="bedroom" variable="Area" value="9.907016031536102" />
+	<add-zone-variable zoneId="bedroom" variable="Electricity" />
+	<modify-zone-variable zoneId="bedroom" variable="Electricity" value="0.0" />
+	<add-zone-variable zoneId="bedroom" variable="Volume" />
+	<modify-zone-variable zoneId="bedroom" variable="Volume" value="24.826982590744407" />
+	<add-zone-variable zoneId="bedroom" variable="Illuminance" />
+	<modify-zone-variable zoneId="bedroom" variable="Illuminance" value="200.0" />
+
+	<!-- Device Section -->
+
+	<create-device id="Heater-39146f9dea" type="iCasa.Heater" />
+	<move-device-zone deviceId="Heater-39146f9dea" zoneId="kitchen" />
+
+	<create-device id="PresenceSensor-8c0f0a1b23" type="iCasa.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-8c0f0a1b23" zoneId="bathroom" />
+
+	<create-device id="DoorWindowSensor-e8cfde9706" type="iCasa.DoorWindowSensor" />
+
+	<create-device id="Thermometer-84454e9dda" type="iCasa.Thermometer" />
+	<move-device-zone deviceId="Thermometer-84454e9dda" zoneId="outdoor" />
+
+	<create-device id="BinaryLight-f4b2172121" type="iCasa.BinaryLight" />
+	<move-device-zone deviceId="BinaryLight-f4b2172121" zoneId="kitchen" />
+
+	<create-device id="Heater-c9c9eb15e2" type="iCasa.Heater" />
+	<move-device-zone deviceId="Heater-c9c9eb15e2" zoneId="bedroom" />
+
+	<create-device id="PresenceSensor-107f7c159e" type="iCasa.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-107f7c159e" zoneId="livingroom" />
+
+	<create-device id="Heater-c66a3ca35f" type="iCasa.Heater" />
+	<move-device-zone deviceId="Heater-c66a3ca35f" zoneId="livingroom" />
+
+	<create-device id="Thermometer-4a2570e15c" type="iCasa.Thermometer" />
+	<move-device-zone deviceId="Thermometer-4a2570e15c" zoneId="kitchen" />
+
+	<create-device id="BinaryLight-6e215146a5" type="iCasa.BinaryLight" />
+	<move-device-zone deviceId="BinaryLight-6e215146a5" zoneId="bathroom" />
+
+	<create-device id="Heater-562f02dab9" type="iCasa.Heater" />
+	<move-device-zone deviceId="Heater-562f02dab9" zoneId="bathroom" />
+
+	<create-device id="BinaryLight-759578bd46" type="iCasa.BinaryLight" />
+	<move-device-zone deviceId="BinaryLight-759578bd46" zoneId="bedroom" />
+
+	<create-device id="BinaryLight-8021ee2ae4" type="iCasa.BinaryLight" />
+	<move-device-zone deviceId="BinaryLight-8021ee2ae4" zoneId="livingroom" />
+
+	<create-device id="Thermometer-7e214accc7" type="iCasa.Thermometer" />
+	<move-device-zone deviceId="Thermometer-7e214accc7" zoneId="bedroom" />
+
+	<create-device id="PresenceSensor-1ddacf6f76" type="iCasa.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-1ddacf6f76" zoneId="kitchen" />
+
+	<create-device id="PresenceSensor-55a1c19655" type="iCasa.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-55a1c19655" zoneId="bedroom" />
+
+	<create-device id="Thermometer-93d348cd5e" type="iCasa.Thermometer" />
+	<move-device-zone deviceId="Thermometer-93d348cd5e" zoneId="livingroom" />
+
+	<create-device id="Thermometer-a419366486" type="iCasa.Thermometer" />
+	<move-device-zone deviceId="Thermometer-a419366486" zoneId="bathroom" />
+
+
+	<!-- Person Section -->
+
+	<create-person id="Mario" type="Old man" />
+
+</behavior>
