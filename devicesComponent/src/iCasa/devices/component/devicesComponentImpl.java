@@ -165,7 +165,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 
 		}
 		snapshot.put("T", JSONthermometer);
-		
+				
 		//OUTDOOR THERMOMETER STATE
 		JSONObject JSONotudoor = new JSONObject();
 		for (Thermometer thermo : thermometers) {
