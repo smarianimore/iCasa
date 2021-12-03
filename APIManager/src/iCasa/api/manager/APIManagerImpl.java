@@ -21,9 +21,10 @@ import iCasa.api.manager.configuration.APIManagerConfiguration;
 
 public class APIManagerImpl implements APIManagerConfiguration {
 	
-	public static final String PERSON_LIST_URL = "http://localhost:9000/icasa/persons/persons";
-	public static final String PERSON_UPDATE_URL = "http://localhost:9000/icasa/persons/person/";
-	public static final String ZONE_LIST_URL = "http://127.0.0.1:9000/icasa/zones/zones";
+	public static final String ROOT = "http://localhost:9000";
+	public static final String PERSON_LIST_URL = ROOT + "/icasa/persons/persons";
+	public static final String PERSON_UPDATE_URL = ROOT + "/icasa/persons/person/";
+	public static final String ZONE_LIST_URL = ROOT + "/icasa/zones/zones";
 	
 	private HttpURLConnection getConnection(URL url) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();

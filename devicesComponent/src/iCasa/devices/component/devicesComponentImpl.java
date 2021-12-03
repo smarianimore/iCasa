@@ -110,6 +110,16 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		else
 			return 0d;
 	}
+	
+	/**
+	 * Test if a device is working
+	 * */
+	public boolean working(GenericDevice device) {
+		if (device.getPropertyValue("fault") == "no" && device.getPropertyValue("state") == "activated")
+			return true;
+		else
+			return false;
+	}
 
 	/** Take the snapshot of the state variables: construct the JSON
 	 * @throws JSONException 
@@ -130,34 +140,34 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 
 		//PRESENCE SENSORS STATE
 		JSONObject JSONpresenceSensors = new JSONObject();
-		for (PresenceSensor presence : presenceSensors) {
+		for (PresenceSensor device : presenceSensors) {
 			boolean value = false;
-			if (presence.getPropertyValue("fault") == "no" && presence.getPropertyValue("state") == "activated")
-				value = (boolean) presence.getPropertyValue("presenceSensor.sensedPresence");
-			String location = (String) presence.getPropertyValue("Location");
+			if (this.working(device))
+				value = (boolean) device.getPropertyValue("presenceSensor.sensedPresence");
+			String location = (String) device.getPropertyValue("Location");
 			JSONpresenceSensors.put(location.toString(), value ? 1 : 0);
 		}
 		snapshot.put("Pr", JSONpresenceSensors);
 
 		//BINARY LIGHTS STATE
 		JSONObject JSONbinaryLights = new JSONObject();
-		for (BinaryLight binLight : binaryLights) {
+		for (BinaryLight device : binaryLights) {
 			boolean value = false;
-			if (binLight.getPropertyValue("fault") == "no" && binLight.getPropertyValue("state") == "activated")
-				value = (boolean) binLight.getPropertyValue("binaryLight.powerStatus");
-			String location = (String) binLight.getPropertyValue("Location");
+			if (this.working(device))
+				value = (boolean) device.getPropertyValue("binaryLight.powerStatus");
+			String location = (String) device.getPropertyValue("Location");
 			JSONbinaryLights.put(location.toString(), value ? 1 : 0);
 		}
 		snapshot.put("L", JSONbinaryLights);
 
 		//INDOOR THERMOMETERS STATE
 		JSONObject JSONthermometer = new JSONObject();
-		for (Thermometer thermo : thermometers) {
-			String location = (String) thermo.getPropertyValue("Location");
+		for (Thermometer device : thermometers) {
+			String location = (String) device.getPropertyValue("Location");
 			if (!location.equals("outdoor")) {
 				double value = -1;
-				if (thermo.getPropertyValue("fault") == "no" && thermo.getPropertyValue("state") == "activated")
-					value = (double) thermo.getPropertyValue("thermometer.currentTemperature");
+				if (this.working(device))
+					value = (double) device.getPropertyValue("thermometer.currentTemperature");
 				JSONthermometer.put(location.toString(), this.roundDouble(value));
 
 				System.out.println("Temperatura interna rilevata: " + this.roundDouble(value) + " in " + location);
@@ -168,12 +178,12 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 				
 		//OUTDOOR THERMOMETER STATE
 		JSONObject JSONotudoor = new JSONObject();
-		for (Thermometer thermo : thermometers) {
-			String location = (String) thermo.getPropertyValue("Location");
+		for (Thermometer device : thermometers) {
+			String location = (String) device.getPropertyValue("Location");
 			if (location.equals("outdoor")) {
 				double value = -1;
-				if (thermo.getPropertyValue("fault") == "no" && thermo.getPropertyValue("state") == "activated")
-					value = (double) thermo.getPropertyValue("thermometer.currentTemperature");
+				if (this.working(device))
+					value = (double) device.getPropertyValue("thermometer.currentTemperature");
 				JSONotudoor.put(location.toString(), this.roundDouble(value));
 
 				System.out.println("Temperatura esterna rilevata: " + this.roundDouble(value) + " in " + location);
@@ -185,7 +195,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		//WINDOW STATE
 		JSONObject JSONwindow = new JSONObject();
 		boolean valueOpen = false;
-		if (windows.getPropertyValue("fault") == "no" && windows.getPropertyValue("state") == "activated")
+		if (this.working(windows))
 			valueOpen = (boolean) windows.getPropertyValue("doorWindowSensor.opneningDetection");
 		String locationWindow = (String) windows.getPropertyValue("Location");
 		JSONwindow.put(locationWindow.toString(), valueOpen ? 1 : 0);
@@ -193,24 +203,24 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 
 		//HEATER STATE
 		JSONObject JSONheater = new JSONObject();
-		for (Heater heat : heaters) {
+		for (Heater device : heaters) {
 			double value = -1;
-			if (heat.getPropertyValue("fault") == "no" && heat.getPropertyValue("state") == "activated")
-				value = (double) heat.getPropertyValue("heater.powerLevel");
-			String location = (String) heat.getPropertyValue("Location");
+			if (this.working(device))
+				value = (double) device.getPropertyValue("heater.powerLevel");
+			String location = (String) device.getPropertyValue("Location");
 			JSONheater.put(location.toString(), this.roundDouble(value));
 		}
 		snapshot.put("H", JSONheater);
 
 		//POWER CONSUMPTION STATE: since the internal model does not consider the power from the heater, we have to add it
 		JSONObject JSONconsumption = new JSONObject();
-		double value = (double) powerConsumption.getCurrentConsumption();
-		System.out.println("Consumo di potenza prima del contributo degli heaters: " + value);
-		for (Heater heating : heaters) {
-			value += (double) heating.getPropertyValue("powerObservable.currentConsumption");
+		double consumptionValue = (double) powerConsumption.getCurrentConsumption();
+		System.out.println("Consumo di potenza prima del contributo degli heaters: " + this.roundDouble(consumptionValue));
+		for (Heater device : heaters) {
+			consumptionValue += (double) device.getPropertyValue("powerObservable.currentConsumption");
 		}
-		System.out.println("Consumo di potenza con il contributo degli heaters: " + value);
-		JSONconsumption.put("Total", this.roundDouble(value));
+		System.out.println("Consumo di potenza con il contributo degli heaters: " + this.roundDouble(consumptionValue));
+		JSONconsumption.put("Total", this.roundDouble(consumptionValue));
 		snapshot.put("Pow", JSONconsumption);
 
 		//Transform the snapshot to JSON and return
@@ -268,12 +278,17 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 
 
 	/*
-	 * The method sets the values of the devices, based on the values randomly given by the manager
+	 * The method sets the values of the devices, based on the values randomly given by the manager:
+	 * 	- window open/close
+	 * 	- indoor and outdoor temperatures
+	 *  - heaters level
 	 * */
 	@Override
 	public void setValues() {
 
 		System.out.println("----------------------MANAGER TIME START-----------------------------");
+		
+		windows.setPropertyValue("doorWindowSensor.opneningDetection", this.windowOpened);
 		
 		double Tint = this.setTemperature();
 		for (Thermometer therm : thermometers) {
@@ -288,9 +303,6 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		for (Heater heater : heaters) {
 			heater.setPropertyValue("heater.powerLevel", this.heaterLevel);
 		}
-
-		//Bisogna confermare che la temperatura assegnata viene mantenuta o se a prevalere è la misurazione effettuata dai termometri
-		//ad ogni iterazione
 
 		System.out.println("----------------------MANAGER TIME END-----------------------------");
 	}
@@ -332,8 +344,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 
 	@Override
 	public void setWindowOpened(boolean windowOpened) {
-		this.windowOpened = windowOpened; //inutile?
-		windows.setPropertyValue("doorWindowSensor.opneningDetection", windowOpened);
+		this.windowOpened = windowOpened;
 	}
 	
 

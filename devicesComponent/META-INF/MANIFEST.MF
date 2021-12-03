@@ -107,32 +107,34 @@ iPOJO-Components: instance { $component="devicesComponent" $name="device
  roperties}" }method { $name="unbindThermometers" $arguments="{fr.liglab
  .adele.icasa.device.temperature.Thermometer,java.util.Map}" $names="{th
  ermometer,properties}" }method { $name="roundDouble" $return="double" $
- arguments="{double}" $names="{num}" }method { $name="takeSnapshot" $ret
- urn="org.json.JSONObject" }method { $name="getHeaterStatus" $return="bo
- olean" }method { $name="setTemperature" $return="double" }method { $nam
- e="setValues" }method { $name="getOutdoorTemperatureThreshold" $return=
- "java.lang.Double" }method { $name="setOutdoorTemperatureThreshold" $ar
- guments="{double}" $names="{outdoorTemperatureThreshold}" }method { $na
- me="getIndoorTemperatureThreshold" $return="java.lang.Double" }method {
-  $name="setIndoorTemperatureThreshold" $arguments="{double}" $names="{i
- ndoorTemperatureThreshold}" }method { $name="getPowerConsumptionThresho
- ld" $return="java.lang.Double" }method { $name="setPowerConsumptionThre
- shold" $arguments="{double}" $names="{powerConsumptionThreshold}" }meth
- od { $name="getWindowOpened" $return="java.lang.Boolean" }method { $nam
- e="setWindowOpened" $arguments="{boolean}" $names="{windowOpened}" }met
- hod { $name="getHeaterLevel" $return="java.lang.Double" }method { $name
- ="setHeaterLevel" $arguments="{double}" $names="{heaterLevel}" }method 
- { $name="deviceAdded" $arguments="{fr.liglab.adele.icasa.device.Generic
- Device}" $names="{arg0}" }method { $name="deviceEvent" $arguments="{fr.
- liglab.adele.icasa.device.GenericDevice,java.lang.Object}" $names="{arg
- 0,arg1}" }method { $name="devicePropertyAdded" $arguments="{fr.liglab.a
- dele.icasa.device.GenericDevice,java.lang.String}" $names="{arg0,arg1}"
-  }method { $name="devicePropertyModified" $arguments="{fr.liglab.adele.
- icasa.device.GenericDevice,java.lang.String,java.lang.Object,java.lang.
- Object}" $names="{device,propertyName,oldValue,newValue}" }method { $na
- me="getBinaryLightFromLocation" $return="java.util.List" $arguments="{j
- ava.lang.String}" $names="{location}" }method { $name="devicePropertyRe
- moved" $arguments="{fr.liglab.adele.icasa.device.GenericDevice,java.lan
- g.String}" $names="{arg0,arg1}" }method { $name="deviceRemoved" $argume
- nts="{fr.liglab.adele.icasa.device.GenericDevice}" $names="{arg0}" }}}
+ arguments="{double}" $names="{num}" }method { $name="working" $return="
+ boolean" $arguments="{fr.liglab.adele.icasa.device.GenericDevice}" $nam
+ es="{device}" }method { $name="takeSnapshot" $return="org.json.JSONObje
+ ct" }method { $name="getHeaterStatus" $return="boolean" }method { $name
+ ="setTemperature" $return="double" }method { $name="setValues" }method 
+ { $name="getOutdoorTemperatureThreshold" $return="java.lang.Double" }me
+ thod { $name="setOutdoorTemperatureThreshold" $arguments="{double}" $na
+ mes="{outdoorTemperatureThreshold}" }method { $name="getIndoorTemperatu
+ reThreshold" $return="java.lang.Double" }method { $name="setIndoorTempe
+ ratureThreshold" $arguments="{double}" $names="{indoorTemperatureThresh
+ old}" }method { $name="getPowerConsumptionThreshold" $return="java.lang
+ .Double" }method { $name="setPowerConsumptionThreshold" $arguments="{do
+ uble}" $names="{powerConsumptionThreshold}" }method { $name="getWindowO
+ pened" $return="java.lang.Boolean" }method { $name="setWindowOpened" $a
+ rguments="{boolean}" $names="{windowOpened}" }method { $name="getHeater
+ Level" $return="java.lang.Double" }method { $name="setHeaterLevel" $arg
+ uments="{double}" $names="{heaterLevel}" }method { $name="deviceAdded" 
+ $arguments="{fr.liglab.adele.icasa.device.GenericDevice}" $names="{arg0
+ }" }method { $name="deviceEvent" $arguments="{fr.liglab.adele.icasa.dev
+ ice.GenericDevice,java.lang.Object}" $names="{arg0,arg1}" }method { $na
+ me="devicePropertyAdded" $arguments="{fr.liglab.adele.icasa.device.Gene
+ ricDevice,java.lang.String}" $names="{arg0,arg1}" }method { $name="devi
+ cePropertyModified" $arguments="{fr.liglab.adele.icasa.device.GenericDe
+ vice,java.lang.String,java.lang.Object,java.lang.Object}" $names="{devi
+ ce,propertyName,oldValue,newValue}" }method { $name="getBinaryLightFrom
+ Location" $return="java.util.List" $arguments="{java.lang.String}" $nam
+ es="{location}" }method { $name="devicePropertyRemoved" $arguments="{fr
+ .liglab.adele.icasa.device.GenericDevice,java.lang.String}" $names="{ar
+ g0,arg1}" }method { $name="deviceRemoved" $arguments="{fr.liglab.adele.
+ icasa.device.GenericDevice}" $names="{arg0}" }}}
 

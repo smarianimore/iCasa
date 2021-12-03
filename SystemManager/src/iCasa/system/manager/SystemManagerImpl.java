@@ -69,12 +69,12 @@ public class SystemManagerImpl implements PeriodicRunnable {
 		
 		System.out.println("Outdoor random temperature: " + rndOutdoorT);
 
-		//POWER CONSUMPTION THRESHOLD
-		double rangeMinPowerConsumption = 0;
-		double rangeMaxPowerConsumption = 4000;
-		double rndPowerConsumption = rangeMinPowerConsumption
-				+ (rangeMaxPowerConsumption - rangeMinPowerConsumption) * r.nextDouble();	
-		devicesConfiguration.setPowerConsumptionThreshold(rndPowerConsumption);
+//		//POWER CONSUMPTION THRESHOLD
+//		double rangeMinPowerConsumption = 0;
+//		double rangeMaxPowerConsumption = 4000;
+//		double rndPowerConsumption = rangeMinPowerConsumption
+//				+ (rangeMaxPowerConsumption - rangeMinPowerConsumption) * r.nextDouble();	
+//		devicesConfiguration.setPowerConsumptionThreshold(rndPowerConsumption);
 		
 		//HEATER LEVEL
 		double rangeMinHeaterLeavel = 0;
