@@ -22,6 +22,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import fr.liglab.adele.icasa.clockservice.Clock;
+import fr.liglab.adele.icasa.device.button.PushButton;
+import fr.liglab.adele.icasa.device.security.Siren;
+import fr.liglab.adele.icasa.device.gasSensor.CarbonDioxydeSensor;
+import fr.liglab.adele.icasa.device.temperature.Cooler;
+import fr.liglab.adele.icasa.device.gasSensor.CarbonMonoxydeSensor;
 
 public class devicesComponentImpl implements SystemServiceConfiguration, DeviceListener {
 
@@ -39,6 +44,17 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	private Thermometer[] thermometers;
 	/** Field for clockService dependency */
 	private Clock clockService;
+	/** Field for coolers dependency */
+	private Cooler[] coolers;
+	/** Field for CO2 dependency */
+	private CarbonDioxydeSensor[] CO2;
+	/** Field for CO dependency */
+	private CarbonMonoxydeSensor[] CO;
+	/** Field for alarms dependency */
+	private Siren alarms;
+	/** Field for buttons dependency */
+	private PushButton buttons;
+
 	/** Injected field for the service property outdoorTemperatureThreshold */
 	private Double outdoorTemperatureThreshold;
 	/** Injected field for the service property indoorTemperatureThreshold */
@@ -47,11 +63,19 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	private Double powerConsumptionThreshold;
 	/** Injected field for the service property windowOpened */
 	private Boolean windowOpened;
-
-	public static final String LOCATION_PROPERTY_NAME = "Location";
-	public static final String LOCATION_UNKNOWN = "unknown";
+	/** Injected field for the service property coolerLevel */
+	private Double coolerLevel;
 	/** Injected field for the service property heaterLevel */
 	private Double heaterLevel;
+	/** Injected field for the service property CO2level */
+	private Double CO2level;
+	/** Injected field for the service property COlevel */
+	private Double COlevel;
+	/** Injected field for the service property btnStatus */
+	private Boolean btnStatus;
+	
+	public static final String LOCATION_PROPERTY_NAME = "Location";
+	public static final String LOCATION_UNKNOWN = "unknown";
 
 	/** Component Lifecycle Method */
 	public void stop() {
@@ -110,12 +134,12 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		else
 			return 0d;
 	}
-	
+
 	/**
 	 * Test if a device is working
 	 * */
-	public boolean working(GenericDevice device) {
-		if (device.getPropertyValue("fault") == "no" && device.getPropertyValue("state") == "activated")
+	public boolean isWorking(GenericDevice device) {
+		if (device.getPropertyValue("fault").equals("no") && device.getPropertyValue("state").equals("activated"))
 			return true;
 		else
 			return false;
@@ -127,8 +151,8 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	 */
 	@Override
 	public JSONObject takeSnapshot() throws JSONException {
-		
-		//First construct the snapshot as a LinkedHashMap to preserve the order of injection
+
+		//Initially construct the snapshot as a LinkedHashMap to preserve the order of injection
 		LinkedHashMap<String, Object> snapshot = new LinkedHashMap<String, Object>();
 
 		//TIMESTAMP
@@ -142,7 +166,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		JSONObject JSONpresenceSensors = new JSONObject();
 		for (PresenceSensor device : presenceSensors) {
 			boolean value = false;
-			if (this.working(device))
+			if (this.isWorking(device))
 				value = (boolean) device.getPropertyValue("presenceSensor.sensedPresence");
 			String location = (String) device.getPropertyValue("Location");
 			JSONpresenceSensors.put(location.toString(), value ? 1 : 0);
@@ -153,7 +177,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		JSONObject JSONbinaryLights = new JSONObject();
 		for (BinaryLight device : binaryLights) {
 			boolean value = false;
-			if (this.working(device))
+			if (this.isWorking(device))
 				value = (boolean) device.getPropertyValue("binaryLight.powerStatus");
 			String location = (String) device.getPropertyValue("Location");
 			JSONbinaryLights.put(location.toString(), value ? 1 : 0);
@@ -166,27 +190,27 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 			String location = (String) device.getPropertyValue("Location");
 			if (!location.equals("outdoor")) {
 				double value = -1;
-				if (this.working(device))
+				if (this.isWorking(device))
 					value = (double) device.getPropertyValue("thermometer.currentTemperature");
 				JSONthermometer.put(location.toString(), this.roundDouble(value));
 
-				System.out.println("Temperatura interna rilevata: " + this.roundDouble(value) + " in " + location);
+				//System.out.println("Temperatura interna rilevata: " + this.roundDouble(value) + " in " + location);
 			}
 
 		}
 		snapshot.put("T", JSONthermometer);
-				
+
 		//OUTDOOR THERMOMETER STATE
 		JSONObject JSONotudoor = new JSONObject();
 		for (Thermometer device : thermometers) {
 			String location = (String) device.getPropertyValue("Location");
 			if (location.equals("outdoor")) {
 				double value = -1;
-				if (this.working(device))
+				if (this.isWorking(device))
 					value = (double) device.getPropertyValue("thermometer.currentTemperature");
 				JSONotudoor.put(location.toString(), this.roundDouble(value));
 
-				System.out.println("Temperatura esterna rilevata: " + this.roundDouble(value) + " in " + location);
+				//System.out.println("Temperatura esterna rilevata: " + this.roundDouble(value) + " in " + location);
 			}
 
 		}
@@ -195,7 +219,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		//WINDOW STATE
 		JSONObject JSONwindow = new JSONObject();
 		boolean valueOpen = false;
-		if (this.working(windows))
+		if (this.isWorking(windows))
 			valueOpen = (boolean) windows.getPropertyValue("doorWindowSensor.opneningDetection");
 		String locationWindow = (String) windows.getPropertyValue("Location");
 		JSONwindow.put(locationWindow.toString(), valueOpen ? 1 : 0);
@@ -205,27 +229,80 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		JSONObject JSONheater = new JSONObject();
 		for (Heater device : heaters) {
 			double value = -1;
-			if (this.working(device))
+			if (this.isWorking(device))
 				value = (double) device.getPropertyValue("heater.powerLevel");
 			String location = (String) device.getPropertyValue("Location");
 			JSONheater.put(location.toString(), this.roundDouble(value));
 		}
 		snapshot.put("H", JSONheater);
 
-		//POWER CONSUMPTION STATE: since the internal model does not consider the power from the heater, we have to add it
+		//COOLER STATE
+		JSONObject JSONcooler = new JSONObject();
+		for (Cooler device : coolers) {
+			double value = -1;
+			if (this.isWorking(device))
+				value = (double) device.getPropertyValue("cooler.powerLevel");
+			String location = (String) device.getPropertyValue("Location");
+			JSONcooler.put(location.toString(), this.roundDouble(value));
+		}
+		snapshot.put("C", JSONcooler);
+
+		//POWER CONSUMPTION STATE: heaters consumption + coolers consumptions
 		JSONObject JSONconsumption = new JSONObject();
 		double consumptionValue = (double) powerConsumption.getCurrentConsumption();
-		System.out.println("Consumo di potenza prima del contributo degli heaters: " + this.roundDouble(consumptionValue));
+		//System.out.println("Consumo di potenza prima del contributo degli heaters: " + this.roundDouble(consumptionValue));
 		for (Heater device : heaters) {
 			consumptionValue += (double) device.getPropertyValue("powerObservable.currentConsumption");
 		}
-		System.out.println("Consumo di potenza con il contributo degli heaters: " + this.roundDouble(consumptionValue));
+		//System.out.println("Consumo di potenza con il contributo degli heaters: " + this.roundDouble(consumptionValue));
+		for (Cooler device : coolers) {
+			consumptionValue += (double) device.getPropertyValue("powerObservable.currentConsumption");
+		}
 		JSONconsumption.put("Total", this.roundDouble(consumptionValue));
 		snapshot.put("Pow", JSONconsumption);
 
+		//CARBON MONOXYDE
+		JSONObject JSONco = new JSONObject();
+		for (CarbonMonoxydeSensor device : CO) {
+			double value = -1;
+			if (this.isWorking(device))
+				value = (double) device.getPropertyValue("carbonMonoxydeSensor.currentConcentration");
+			String location = (String) device.getPropertyValue("Location");
+			JSONco.put(location.toString(), this.roundDouble(value));
+		}
+		snapshot.put("CO", JSONco);
+
+		//CARBON DIOXIDE
+		JSONObject JSONco2 = new JSONObject();
+		for (CarbonDioxydeSensor device : CO2) {
+			double value = -1;
+			if (this.isWorking(device))
+				value = (double) device.getPropertyValue("carbonDioxydeSensor.currentConcentration");
+			String location = (String) device.getPropertyValue("Location");
+			JSONco2.put(location.toString(), this.roundDouble(value));
+		}
+		snapshot.put("CO2", JSONco2);
+
+		//ALARM
+		JSONObject JSONalarm = new JSONObject();
+		boolean valueAlarm = false;
+		if (this.isWorking(alarms))
+			valueAlarm = (boolean) alarms.getPropertyValue("siren.status");
+		String locationAlarm = (String) alarms.getPropertyValue("Location");
+		JSONalarm.put(locationAlarm.toString(), valueAlarm ? 1 : 0);
+		snapshot.put("A", JSONalarm);
+
+		//BUTTON
+		JSONObject JSONbutton = new JSONObject();
+		boolean valueButton = false;
+		if (this.isWorking(buttons))
+			valueButton = (boolean) buttons.getPropertyValue("pushButton.pushAndHold");
+		String locationButton = (String) buttons.getPropertyValue("Location");
+		JSONbutton.put(locationButton.toString(), valueButton ? 1 : 0);
+		snapshot.put("B", JSONbutton);
+
 		//Transform the snapshot to JSON and return
 		JSONObject JSONsnapshot = new JSONObject(snapshot);
-		
 		return JSONsnapshot;
 	}
 
@@ -240,42 +317,58 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		 * quando si va ad impostare la temperatura*/
 
 	}
+	
+	public boolean getCoolerStatus() {
+		double coolerValue = this.coolerLevel;
+		if (coolerValue > 500)
+			return true;
+		else
+			return false;
+	}
 
 	public double setTemperature() {
 		double Text = this.outdoorTemperatureThreshold;
 		double Tint = this.indoorTemperatureThreshold;
-		boolean H = this.getHeaterStatus(); //da implementare i livelli di heater
+		boolean H = this.getHeaterStatus();
+		boolean C = this.getCoolerStatus();
 
 		//Window opened
 		if (this.windowOpened) {
 			if (Text > Tint) {
-				if (H)
+				if (H && !C) //with the heaters on, the indoor temperature increases
 					Tint = Tint + ((Text - Tint) * 0.8);
-				else
+				else if (!H && C) //with the coolers on, the indoor temperature decreases
+					Tint = Tint - ((Text - Tint) * 0.8);
+				else //otherwise the temperature increases but less
 					Tint = Tint + ((Text - Tint) * 0.6);
 			} else if (Text == Tint) {
-				if (H)
+				if (H && !C)
 					Tint = Text + (Tint * 0.2);
+				else if (!H && C)
+					Tint = Text - (Tint * 0.2);
 				else
 					Tint = Text;
 			} else if (Text < Tint) {
-				if (H)
+				if (H && !C)
+					Tint = Tint + ((Tint - Text) * 0.6);
+				else if (!H && C)
 					Tint = Tint - ((Tint - Text) * 0.6);
 				else
 					Tint = Tint - ((Tint - Text) * 0.8);
 			}
-		}//Window closed
+		} //Window closed
 		else if (!this.windowOpened) {
-			double alfa = 0.05;	//fattore di crescita da regolare in base al massimo della temperatura interna che si può raggiungere
-			if (H)
+			double alfa = 0.05; //fattore di crescita da regolare in base al massimo della temperatura interna che si può raggiungere
+			if (H && !C) //with the heaters on the indoor temperature increases
 				Tint = Tint + Tint * alfa;
-			else
+			else if (!H && C) //with the coolers on the indoor temperature decreases
+				Tint = Tint - Tint * alfa;
+			else //if heaters and coolers are contemporary on or off, the indoor temperature remains constant
 				Tint = Tint;
 		}
-		
+
 		return Tint;
 	}
-
 
 	/*
 	 * The method sets the values of the devices, based on the values randomly given by the manager:
@@ -287,21 +380,63 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	public void setValues() {
 
 		System.out.println("----------------------MANAGER TIME START-----------------------------");
-		
-		windows.setPropertyValue("doorWindowSensor.opneningDetection", this.windowOpened);
-		
-		double Tint = this.setTemperature();
-		for (Thermometer therm : thermometers) {
-			String location = (String) therm.getPropertyValue("Location");
-			if (location.equals("outdoor"))
-				therm.setPropertyValue("thermometer.currentTemperature", this.outdoorTemperatureThreshold);
-			else
-				therm.setPropertyValue("thermometer.currentTemperature", Tint);
+
+		//Queste assegnazioni potrebbero farsi nei metodi setCOlevel e setCO2level
+		for (CarbonMonoxydeSensor device : CO) {
+			device.setPropertyValue("carbonMonoxydeSensor.currentConcentration", this.COlevel);
 		}
-		System.out.println("Temperatura interna dopo calcolo: " + Tint);
+		for (CarbonDioxydeSensor device : CO2) {
+			device.setPropertyValue("carbonDioxydeSensor.currentConcentration", this.CO2level);
+		}
 		
+		//Activate alarm if CO and CO2 levels high (migliorabile)
+		if (this.COlevel >= 35 || this.CO2level >= 2000) {
+			if (this.isWorking(alarms))
+				alarms.setPropertyValue("siren.status", true);
+		}else if (this.COlevel >= 15 && this.CO2level >= 1400) {
+			if (this.isWorking(alarms))
+				alarms.setPropertyValue("siren.status", true);
+		}
+
+		//Window: set the window with the random value
+		//windows.setPropertyValue("doorWindowSensor.opneningDetection", this.windowOpened);
+
+		//Window: open the window if alarm on or button pushed (pay attention: this setting makes the this.windowOpened useless)
+		if (this.isWorking(alarms))
+			if ((boolean) alarms.getPropertyValue("siren.status")) {
+				windows.setPropertyValue("doorWindowSensor.opneningDetection", true); //device
+				this.setWindowOpened(true);	//local variable
+			}else {
+				this.setWindowOpened(false);
+			}
+				
+		if (this.btnStatus) {
+			buttons.setPropertyValue("pushButton.pushAndHold", true);
+			windows.setPropertyValue("doorWindowSensor.opneningDetection", true);
+			this.setWindowOpened(true);
+		}else {
+			buttons.setPropertyValue("pushButton.pushAndHold", false);
+			this.setWindowOpened(false);
+		}
+
+		//Temperature <-- Attention: it needs this.windowsOpened
+		double Tint = this.setTemperature();
+		for (Thermometer device : thermometers) {
+			String location = (String) device.getPropertyValue("Location");
+			if (location.equals("outdoor"))
+				device.setPropertyValue("thermometer.currentTemperature", this.outdoorTemperatureThreshold);
+			else
+				device.setPropertyValue("thermometer.currentTemperature", Tint);
+		}
+		
+		//Heater
 		for (Heater heater : heaters) {
 			heater.setPropertyValue("heater.powerLevel", this.heaterLevel);
+		}
+
+		//Cooler
+		for (Cooler cooler : coolers) {
+			cooler.setPropertyValue("cooler.powerLevel", this.coolerLevel);
 		}
 
 		System.out.println("----------------------MANAGER TIME END-----------------------------");
@@ -346,7 +481,6 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	public void setWindowOpened(boolean windowOpened) {
 		this.windowOpened = windowOpened;
 	}
-	
 
 	@Override
 	public Double getHeaterLevel() {
@@ -356,7 +490,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	@Override
 	public void setHeaterLevel(double heaterLevel) {
 		this.heaterLevel = heaterLevel;
-		
+
 	}
 
 	@Override
@@ -439,5 +573,76 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 
 	}
 
+	/** Bind Method for CO2 dependency */
+	public void bindCO2(CarbonDioxydeSensor carbonDioxydeSensor, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	/** Unbind Method for CO2 dependency */
+	public void unbindCO2(CarbonDioxydeSensor carbonDioxydeSensor, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	/** Bind Method for CO dependency */
+	public void bindCO(CarbonMonoxydeSensor carbonMonoxydeSensor, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	/** Unbind Method for CO dependency */
+	public void unbindCO(CarbonMonoxydeSensor carbonMonoxydeSensor, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	/** Bind Method for coolers dependency */
+	public void bindCoolers(Cooler cooler, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	/** Unbind Method for coolers dependency */
+	public void unbindCoolers(Cooler cooler, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	@Override
+	public Double getCoolerLevel() {
+		return this.coolerLevel;
+	}
+
+	@Override
+	public void setCoolerLevel(double coolerLevel) {
+		this.coolerLevel = coolerLevel;
+	}
+
+	@Override
+	public Double getCOlevel() {
+		return this.COlevel;
+	}
+
+	@Override
+	public void setCOlevel(double COlevel) {
+		this.COlevel = COlevel;
+
+	}
+
+	@Override
+	public Double getCO2level() {
+		return this.CO2level;
+	}
+
+	@Override
+	public void setCO2level(double CO2level) {
+		this.CO2level = CO2level;
+
+	}
+
+	@Override
+	public Boolean getBtnStatus() {
+		return this.btnStatus;
+	}
+
+	@Override
+	public void setBtnStatus(boolean btnStatus) {
+		this.btnStatus = btnStatus;
+	}
 
 }

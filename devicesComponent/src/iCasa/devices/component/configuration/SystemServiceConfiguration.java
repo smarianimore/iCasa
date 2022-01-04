@@ -27,6 +27,13 @@ public interface SystemServiceConfiguration {
 	public void setWindowOpened(boolean windowOpened);
 	public Double getHeaterLevel();
 	public void setHeaterLevel(double heaterLevel);
-	
+	public Double getCoolerLevel();
+	public void setCoolerLevel(double coolerLevel);
+	public Double getCOlevel();
+	public void setCOlevel(double COlevel);
+	public Double getCO2level();
+	public void setCO2level(double CO2level);
+	public Boolean getBtnStatus();
+	public void setBtnStatus(boolean btnStatus);
 	
 }

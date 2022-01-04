@@ -27,8 +27,9 @@ public class SystemManagerImpl implements PeriodicRunnable {
 	/* MAIN PROGRAM */
 	@Override
 	public void run() {
+		System.out.println("The manager is starting...");
 		System.out.println("Snapshot del sistema");
-		try {
+		try {		
 			//TAKE THE SNAPSHOT OF THE SYSTEM
 			JSONObject snapshot = new JSONObject();
 			snapshot = devicesConfiguration.takeSnapshot();
@@ -38,7 +39,7 @@ public class SystemManagerImpl implements PeriodicRunnable {
 			//WRITE THE RECORD ON THE DATASET
 			datasetManager.buildAndWrite(snapshot);
 
-			System.out.println("Snapshot recorded");
+			System.out.println("Snapshot writed on the dataset!");
 
 			//SET THE VARIABLES IN A RANDOM WAY
 			this.setVariablesRandom();
@@ -58,23 +59,19 @@ public class SystemManagerImpl implements PeriodicRunnable {
 		double rangeMaxIndoorT = 298.15;
 		double rndIndoorT = rangeMinIndoorT + (rangeMaxIndoorT - rangeMinIndoorT) * r.nextDouble();
 		devicesConfiguration.setIndoorTemperatureThreshold(rndIndoorT);
-		
-		System.out.println("Indoor random temperature: " + rndIndoorT);
 
 		//OUTDOOR TEMPERATURE THRESHOLD
 		double rangeMinOutdoorT = 273.15;
 		double rangeMaxOutdoorT = 308.15;
 		double rndOutdoorT = rangeMinOutdoorT + (rangeMaxOutdoorT - rangeMinOutdoorT) * r.nextDouble();
 		devicesConfiguration.setOutdoorTemperatureThreshold(rndOutdoorT);
-		
-		System.out.println("Outdoor random temperature: " + rndOutdoorT);
 
-//		//POWER CONSUMPTION THRESHOLD
-//		double rangeMinPowerConsumption = 0;
-//		double rangeMaxPowerConsumption = 4000;
-//		double rndPowerConsumption = rangeMinPowerConsumption
-//				+ (rangeMaxPowerConsumption - rangeMinPowerConsumption) * r.nextDouble();	
-//		devicesConfiguration.setPowerConsumptionThreshold(rndPowerConsumption);
+		//POWER CONSUMPTION THRESHOLD
+		//double rangeMinPowerConsumption = 0;
+		//double rangeMaxPowerConsumption = 4000;
+		//double rndPowerConsumption = rangeMinPowerConsumption
+		//		+ (rangeMaxPowerConsumption - rangeMinPowerConsumption) * r.nextDouble();	
+		//devicesConfiguration.setPowerConsumptionThreshold(rndPowerConsumption);
 		
 		//HEATER LEVEL
 		double rangeMinHeaterLeavel = 0;
@@ -82,13 +79,31 @@ public class SystemManagerImpl implements PeriodicRunnable {
 		double rndHeaterLevel = rangeMinHeaterLeavel + (rangeMaxHeaterLeavel - rangeMinHeaterLeavel) * r.nextDouble();
 		devicesConfiguration.setHeaterLevel(rndHeaterLevel);
 		
-		System.out.println("Random Heater Level: " + rndHeaterLevel);
+		//COOLER LEVEL
+		double rangeMinCoolerLeavel = 0;
+		double rangeMaxCoolerLeavel = 1000;
+		double rndCoolerLevel = rangeMinCoolerLeavel + (rangeMaxCoolerLeavel - rangeMinCoolerLeavel) * r.nextDouble();
+		devicesConfiguration.setCoolerLevel(rndCoolerLevel);
+		
+		//CO LEVEL
+		double rangeMinCOLeavel = 1400;
+		double rangeMaxCOLeavel = 2000;
+		double rndCOLevel = rangeMinCOLeavel + (rangeMaxCOLeavel - rangeMinCOLeavel) * r.nextDouble();
+		devicesConfiguration.setCOlevel(rndCOLevel);
+		
+		//CO2 LEVEL
+		double rangeMinCO2Leavel = 0;
+		double rangeMaxCO2Leavel = 35;
+		double rndCO2Level = rangeMinCO2Leavel + (rangeMaxCO2Leavel - rangeMinCO2Leavel) * r.nextDouble();
+		devicesConfiguration.setCO2level(rndCO2Level);
 		
 		//WINDOW OPENED/CLOSED
-		boolean opening = r.nextBoolean();
-		devicesConfiguration.setWindowOpened(opening);
+		//boolean opening = r.nextBoolean();
+		//devicesConfiguration.setWindowOpened(opening);
 		
-		System.out.println(opening ? "Finestra aperta" : "Finestra chiusa");
+		//BUTTON
+		boolean btn = r.nextBoolean();
+		devicesConfiguration.setBtnStatus(btn);
 		
 		//MOVE PERSON RANDOMLY
 		List<String> zones = new ArrayList<String>();
