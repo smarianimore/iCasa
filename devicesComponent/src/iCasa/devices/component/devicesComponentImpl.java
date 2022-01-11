@@ -27,6 +27,7 @@ import fr.liglab.adele.icasa.device.security.Siren;
 import fr.liglab.adele.icasa.device.gasSensor.CarbonDioxydeSensor;
 import fr.liglab.adele.icasa.device.temperature.Cooler;
 import fr.liglab.adele.icasa.device.gasSensor.CarbonMonoxydeSensor;
+import fr.liglab.adele.icasa.device.power.PowerSwitch;
 
 public class devicesComponentImpl implements SystemServiceConfiguration, DeviceListener {
 
@@ -54,6 +55,8 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	private Siren alarms;
 	/** Field for buttons dependency */
 	private PushButton buttons;
+	/** Field for switcher dependency */
+	private PowerSwitch switcher;
 
 	/** Injected field for the service property outdoorTemperatureThreshold */
 	private Double outdoorTemperatureThreshold;
@@ -73,7 +76,9 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	private Double COlevel;
 	/** Injected field for the service property btnStatus */
 	private Boolean btnStatus;
-	
+	/** Injected field for the service property switcherStatus */
+	private Boolean switcherStatus;
+
 	public static final String LOCATION_PROPERTY_NAME = "Location";
 	public static final String LOCATION_UNKNOWN = "unknown";
 
@@ -301,6 +306,14 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		JSONbutton.put(locationButton.toString(), valueButton ? 1 : 0);
 		snapshot.put("B", JSONbutton);
 
+		JSONObject JSONswitcher = new JSONObject();
+		boolean valueSwitcher = false;
+		if (this.isWorking(switcher))
+			valueSwitcher = (boolean) switcher.getPropertyValue("powerSwitch.currentStatus");
+		String locationSwitcher = (String) switcher.getPropertyValue("Location");
+		JSONswitcher.put(locationSwitcher.toString(), valueSwitcher ? 1 : 0);
+		snapshot.put("S", JSONswitcher);
+
 		//Transform the snapshot to JSON and return
 		JSONObject JSONsnapshot = new JSONObject(snapshot);
 		return JSONsnapshot;
@@ -317,7 +330,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		 * quando si va ad impostare la temperatura*/
 
 	}
-	
+
 	public boolean getCoolerStatus() {
 		double coolerValue = this.coolerLevel;
 		if (coolerValue > 500)
@@ -388,12 +401,12 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		for (CarbonDioxydeSensor device : CO2) {
 			device.setPropertyValue("carbonDioxydeSensor.currentConcentration", this.CO2level);
 		}
-		
+
 		//Activate alarm if CO and CO2 levels high (migliorabile)
 		if (this.COlevel >= 35 || this.CO2level >= 2000) {
 			if (this.isWorking(alarms))
 				alarms.setPropertyValue("siren.status", true);
-		}else if (this.COlevel >= 15 && this.CO2level >= 1400) {
+		} else if (this.COlevel >= 15 && this.CO2level >= 1400) {
 			if (this.isWorking(alarms))
 				alarms.setPropertyValue("siren.status", true);
 		}
@@ -405,17 +418,19 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		if (this.isWorking(alarms))
 			if ((boolean) alarms.getPropertyValue("siren.status")) {
 				windows.setPropertyValue("doorWindowSensor.opneningDetection", true); //device
-				this.setWindowOpened(true);	//local variable
-			}else {
+				this.setWindowOpened(true); //local variable
+			} else {
+				windows.setPropertyValue("doorWindowSensor.opneningDetection", false);
 				this.setWindowOpened(false);
 			}
-				
+
 		if (this.btnStatus) {
 			buttons.setPropertyValue("pushButton.pushAndHold", true);
 			windows.setPropertyValue("doorWindowSensor.opneningDetection", true);
 			this.setWindowOpened(true);
-		}else {
+		} else {
 			buttons.setPropertyValue("pushButton.pushAndHold", false);
+			windows.setPropertyValue("doorWindowSensor.opneningDetection", false);
 			this.setWindowOpened(false);
 		}
 
@@ -428,16 +443,27 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 			else
 				device.setPropertyValue("thermometer.currentTemperature", Tint);
 		}
-		
-		//Heater
-		for (Heater heater : heaters) {
-			heater.setPropertyValue("heater.powerLevel", this.heaterLevel);
-		}
 
-		//Cooler
-		for (Cooler cooler : coolers) {
-			cooler.setPropertyValue("cooler.powerLevel", this.coolerLevel);
+		if (this.switcherStatus) {
+			//Heater
+			for (Heater heater : heaters) {
+				heater.setPropertyValue("heater.powerLevel", this.heaterLevel);
+			}
+			//Cooler
+			for (Cooler cooler : coolers) {
+				cooler.setPropertyValue("cooler.powerLevel", 0d);
+			}
+		}else {
+			//Cooler
+			for (Cooler cooler : coolers) {
+				cooler.setPropertyValue("cooler.powerLevel", this.coolerLevel);
+			}
+			//Cooler
+			for (Cooler cooler : coolers) {
+				cooler.setPropertyValue("cooler.powerLevel", 0d);
+			}
 		}
+		
 
 		System.out.println("----------------------MANAGER TIME END-----------------------------");
 	}
@@ -532,6 +558,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 				// get the related binary lights
 				List<BinaryLight> sameLocationLigths = getBinaryLightFromLocation(detectorLocation);
 
+				//lights on
 				for (BinaryLight binaryLight : sameLocationLigths) {
 					if (changingSensor.getSensedPresence()) {
 						binaryLight.turnOn();
@@ -539,6 +566,10 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 						binaryLight.turnOff();
 					}
 				}
+				
+				//the person sets the value of the switch
+				switcher.setPropertyValue("powerSwitch.currentStatus", this.switcherStatus);
+
 			}
 		}
 
@@ -643,6 +674,16 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	@Override
 	public void setBtnStatus(boolean btnStatus) {
 		this.btnStatus = btnStatus;
+	}
+
+	@Override
+	public Boolean getSwitcherStatus() {
+		return this.switcherStatus;
+	}
+
+	@Override
+	public void setSwitcherStatus(boolean switcherStatus) {
+		this.switcherStatus = switcherStatus;
 	}
 
 }

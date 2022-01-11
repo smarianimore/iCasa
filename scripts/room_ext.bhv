@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<behavior factor="1440">
+
+	<!-- Zone Section -->
+
+	<create-zone  id ="outdoor" leftX ="57" topY ="0" bottomZ ="0" X-Length ="589" Y-Length ="49" Z-Length ="179"/>
+	<add-zone-variable zoneId="outdoor" variable="Temperature" />
+	<modify-zone-variable zoneId="outdoor" variable="Temperature" value="293.15" />
+	<add-zone-variable zoneId="outdoor" variable="Area" />
+	<modify-zone-variable zoneId="outdoor" variable="Area" value="5.656756603878989" />
+	<add-zone-variable zoneId="outdoor" variable="Electricity" />
+	<modify-zone-variable zoneId="outdoor" variable="Electricity" value="0.0" />
+	<add-zone-variable zoneId="outdoor" variable="Volume" />
+	<modify-zone-variable zoneId="outdoor" variable="Volume" value="14.175832286687701" />
+	<add-zone-variable zoneId="outdoor" variable="Illuminance" />
+	<modify-zone-variable zoneId="outdoor" variable="Illuminance" value="800.0" />
+
+	<create-zone  id ="room" leftX ="406" topY ="58" bottomZ ="0" X-Length ="238" Y-Length ="305" Z-Length ="179"/>
+	<add-zone-variable zoneId="room" variable="Temperature" />
+	<modify-zone-variable zoneId="room" variable="Temperature" value="293.15" />
+	<add-zone-variable zoneId="room" variable="Area" />
+	<modify-zone-variable zoneId="room" variable="Area" value="14.227640009746551" />
+	<add-zone-variable zoneId="room" variable="Electricity" />
+	<modify-zone-variable zoneId="room" variable="Electricity" value="0.0" />
+	<add-zone-variable zoneId="room" variable="Volume" />
+	<modify-zone-variable zoneId="room" variable="Volume" value="35.65446646144039" />
+	<add-zone-variable zoneId="room" variable="Illuminance" />
+	<modify-zone-variable zoneId="room" variable="Illuminance" value="800.0" />
+
+	<!-- Device Section -->
+
+	<create-device id="DoorWindowSensor-b041e06747" type="iCasa.DoorWindowSensor" />
+	<move-device-zone deviceId="DoorWindowSensor-b041e06747" zoneId="room" />
+
+	<create-device id="COGasSensor-1bc0572e9e" type="iCasa.COGasSensor" />
+	<move-device-zone deviceId="COGasSensor-1bc0572e9e" zoneId="room" />
+
+	<create-device id="CO2GasSensor-b66d761212" type="iCasa.CO2GasSensor" />
+	<move-device-zone deviceId="CO2GasSensor-b66d761212" zoneId="room" />
+
+	<create-device id="BinaryLight-5022136575" type="iCasa.BinaryLight" />
+	<move-device-zone deviceId="BinaryLight-5022136575" zoneId="room" />
+
+	<create-device id="Heater-1bd6fdc99a" type="iCasa.Heater" />
+	<move-device-zone deviceId="Heater-1bd6fdc99a" zoneId="room" />
+
+	<create-device id="Cooler-ce2209b064" type="iCasa.Cooler" />
+	<move-device-zone deviceId="Cooler-ce2209b064" zoneId="room" />
+
+	<create-device id="Thermometer-829cc07927" type="iCasa.Thermometer" />
+	<move-device-zone deviceId="Thermometer-829cc07927" zoneId="room" />
+
+	<create-device id="Siren-d6c226252a" type="iCasa.Siren" />
+	<move-device-zone deviceId="Siren-d6c226252a" zoneId="room" />
+
+	<create-device id="PushButton-d9704c5a0f" type="iCasa.PushButton" />
+	<move-device-zone deviceId="PushButton-d9704c5a0f" zoneId="room" />
+
+	<create-device id="ToggleSwitch-d7935d534c" type="iCasa.ToggleSwitch" />
+	<move-device-zone deviceId="ToggleSwitch-d7935d534c" zoneId="room" />
+
+	<create-device id="PresenceSensor-cd52a5fed8" type="iCasa.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-cd52a5fed8" zoneId="room" />
+
+	<create-device id="Thermometer-b1f74267ed" type="iCasa.Thermometer" />
+	<move-device-zone deviceId="Thermometer-b1f74267ed" zoneId="outdoor" />
+
+
+	<!-- Person Section -->
+
+	<create-person id="Jessica" type="Girl" />
+
+</behavior>

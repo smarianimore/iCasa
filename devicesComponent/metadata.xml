@@ -31,6 +31,7 @@
       <property field="CO2level" name="CO2level" type="java.lang.Double"/>
       <property field="COlevel" name="COlevel" type="java.lang.Double"/>
       <property field="btnStatus" name="btnStatus" type="java.lang.Boolean"/>
+      <property field="switcherStatus" name="switcherStatus" type="java.lang.Boolean"/>
     </provides>
     <requires optional="true" specification="fr.liglab.adele.icasa.clockservice.Clock" field="clockService"/>
     <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.temperature.Cooler" field="coolers">
@@ -47,6 +48,7 @@
     </requires>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.security.Siren" field="alarms"/>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.button.PushButton" field="buttons"/>
+    <requires optional="true" specification="fr.liglab.adele.icasa.device.power.PowerSwitch" field="switcher"/>
   </component>
   <instance component="devicesComponent" name="devicesComponent-1"/>
 </ipojo>

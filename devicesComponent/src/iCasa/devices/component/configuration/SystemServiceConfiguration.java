@@ -35,5 +35,7 @@ public interface SystemServiceConfiguration {
 	public void setCO2level(double CO2level);
 	public Boolean getBtnStatus();
 	public void setBtnStatus(boolean btnStatus);
+	public Boolean getSwitcherStatus();
+	public void setSwitcherStatus(boolean switcherStatus);
 	
 }

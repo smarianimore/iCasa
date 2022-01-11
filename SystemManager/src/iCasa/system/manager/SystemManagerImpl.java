@@ -86,14 +86,14 @@ public class SystemManagerImpl implements PeriodicRunnable {
 		devicesConfiguration.setCoolerLevel(rndCoolerLevel);
 		
 		//CO LEVEL
-		double rangeMinCOLeavel = 1400;
-		double rangeMaxCOLeavel = 2000;
+		double rangeMinCOLeavel = 0;
+		double rangeMaxCOLeavel = 35;
 		double rndCOLevel = rangeMinCOLeavel + (rangeMaxCOLeavel - rangeMinCOLeavel) * r.nextDouble();
 		devicesConfiguration.setCOlevel(rndCOLevel);
 		
 		//CO2 LEVEL
 		double rangeMinCO2Leavel = 0;
-		double rangeMaxCO2Leavel = 35;
+		double rangeMaxCO2Leavel = 2000;
 		double rndCO2Level = rangeMinCO2Leavel + (rangeMaxCO2Leavel - rangeMinCO2Leavel) * r.nextDouble();
 		devicesConfiguration.setCO2level(rndCO2Level);
 		
@@ -104,6 +104,10 @@ public class SystemManagerImpl implements PeriodicRunnable {
 		//BUTTON
 		boolean btn = r.nextBoolean();
 		devicesConfiguration.setBtnStatus(btn);
+		
+		//SWITCHER
+		boolean switcher = r.nextBoolean();
+		devicesConfiguration.setSwitcherStatus(switcher);
 		
 		//MOVE PERSON RANDOMLY
 		List<String> zones = new ArrayList<String>();
