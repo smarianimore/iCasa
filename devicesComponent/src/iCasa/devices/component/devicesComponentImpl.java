@@ -305,7 +305,8 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		String locationButton = (String) buttons.getPropertyValue("Location");
 		JSONbutton.put(locationButton.toString(), valueButton ? 1 : 0);
 		snapshot.put("B", JSONbutton);
-
+		
+		//SWITCH
 		JSONObject JSONswitcher = new JSONObject();
 		boolean valueSwitcher = false;
 		if (this.isWorking(switcher))
@@ -409,27 +410,28 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		} else if (this.COlevel >= 15 && this.CO2level >= 1400) {
 			if (this.isWorking(alarms))
 				alarms.setPropertyValue("siren.status", true);
+		}else {
+			if (this.isWorking(alarms))
+				alarms.setPropertyValue("siren.status", false);
 		}
 
 		//Window: set the window with the random value
 		//windows.setPropertyValue("doorWindowSensor.opneningDetection", this.windowOpened);
-
-		//Window: open the window if alarm on or button pushed (pay attention: this setting makes the this.windowOpened useless)
-		if (this.isWorking(alarms))
-			if ((boolean) alarms.getPropertyValue("siren.status")) {
-				windows.setPropertyValue("doorWindowSensor.opneningDetection", true); //device
-				this.setWindowOpened(true); //local variable
-			} else {
-				windows.setPropertyValue("doorWindowSensor.opneningDetection", false);
-				this.setWindowOpened(false);
-			}
-
+		
 		if (this.btnStatus) {
 			buttons.setPropertyValue("pushButton.pushAndHold", true);
-			windows.setPropertyValue("doorWindowSensor.opneningDetection", true);
-			this.setWindowOpened(true);
 		} else {
 			buttons.setPropertyValue("pushButton.pushAndHold", false);
+		}
+		
+		//The window is opened when the alarm is on independently from the button, or when the button is pushed with the alarm off
+		if ((boolean) alarms.getPropertyValue("siren.status")) {
+			windows.setPropertyValue("doorWindowSensor.opneningDetection", true);
+			this.setWindowOpened(true); //local variable
+		}else if (!(boolean) alarms.getPropertyValue("siren.status") && this.btnStatus) {
+			windows.setPropertyValue("doorWindowSensor.opneningDetection", true);
+			this.setWindowOpened(true);
+		}else {
 			windows.setPropertyValue("doorWindowSensor.opneningDetection", false);
 			this.setWindowOpened(false);
 		}
@@ -453,17 +455,16 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 			for (Cooler cooler : coolers) {
 				cooler.setPropertyValue("cooler.powerLevel", 0d);
 			}
-		}else {
+		} else {
+			//Heater
+			for (Heater heater : heaters) {
+				heater.setPropertyValue("heater.powerLevel", 0d);
+			}
 			//Cooler
 			for (Cooler cooler : coolers) {
 				cooler.setPropertyValue("cooler.powerLevel", this.coolerLevel);
 			}
-			//Cooler
-			for (Cooler cooler : coolers) {
-				cooler.setPropertyValue("cooler.powerLevel", 0d);
-			}
 		}
-		
 
 		System.out.println("----------------------MANAGER TIME END-----------------------------");
 	}
@@ -518,6 +519,58 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 		this.heaterLevel = heaterLevel;
 
 	}
+	
+	@Override
+	public Double getCoolerLevel() {
+		return this.coolerLevel;
+	}
+
+	@Override
+	public void setCoolerLevel(double coolerLevel) {
+		this.coolerLevel = coolerLevel;
+	}
+
+	@Override
+	public Double getCOlevel() {
+		return this.COlevel;
+	}
+
+	@Override
+	public void setCOlevel(double COlevel) {
+		this.COlevel = COlevel;
+
+	}
+
+	@Override
+	public Double getCO2level() {
+		return this.CO2level;
+	}
+
+	@Override
+	public void setCO2level(double CO2level) {
+		this.CO2level = CO2level;
+
+	}
+
+	@Override
+	public Boolean getBtnStatus() {
+		return this.btnStatus;
+	}
+
+	@Override
+	public void setBtnStatus(boolean btnStatus) {
+		this.btnStatus = btnStatus;
+	}
+
+	@Override
+	public Boolean getSwitcherStatus() {
+		return this.switcherStatus;
+	}
+	
+	@Override
+	public void setSwitcherStatus(boolean switcherStatus) {
+		this.switcherStatus = switcherStatus;
+	}
 
 	@Override
 	public void deviceAdded(GenericDevice arg0) {
@@ -566,7 +619,7 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 						binaryLight.turnOff();
 					}
 				}
-				
+
 				//the person sets the value of the switch
 				switcher.setPropertyValue("powerSwitch.currentStatus", this.switcherStatus);
 
@@ -632,58 +685,6 @@ public class devicesComponentImpl implements SystemServiceConfiguration, DeviceL
 	/** Unbind Method for coolers dependency */
 	public void unbindCoolers(Cooler cooler, Map properties) {
 		// TODO: Add your implementation code here
-	}
-
-	@Override
-	public Double getCoolerLevel() {
-		return this.coolerLevel;
-	}
-
-	@Override
-	public void setCoolerLevel(double coolerLevel) {
-		this.coolerLevel = coolerLevel;
-	}
-
-	@Override
-	public Double getCOlevel() {
-		return this.COlevel;
-	}
-
-	@Override
-	public void setCOlevel(double COlevel) {
-		this.COlevel = COlevel;
-
-	}
-
-	@Override
-	public Double getCO2level() {
-		return this.CO2level;
-	}
-
-	@Override
-	public void setCO2level(double CO2level) {
-		this.CO2level = CO2level;
-
-	}
-
-	@Override
-	public Boolean getBtnStatus() {
-		return this.btnStatus;
-	}
-
-	@Override
-	public void setBtnStatus(boolean btnStatus) {
-		this.btnStatus = btnStatus;
-	}
-
-	@Override
-	public Boolean getSwitcherStatus() {
-		return this.switcherStatus;
-	}
-
-	@Override
-	public void setSwitcherStatus(boolean switcherStatus) {
-		this.switcherStatus = switcherStatus;
 	}
 
 }
