@@ -25,6 +25,7 @@ public class APIManagerImpl implements APIManagerConfiguration {
 	public static final String PERSON_LIST_URL = ROOT + "/icasa/persons/persons";
 	public static final String PERSON_UPDATE_URL = ROOT + "/icasa/persons/person/";
 	public static final String ZONE_LIST_URL = ROOT + "/icasa/zones/zones";
+	public static final String DEVICE_UPDATE_URL = ROOT + "/icasa/devices/device/";
 	
 	private HttpURLConnection getConnection(URL url) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -74,6 +75,41 @@ public class APIManagerImpl implements APIManagerConfiguration {
 		}
 		
 	}
+	
+//	public void putDevice(String deviceID, String propertyName, String propertyValue) throws MalformedURLException{
+//		URL url = new URL((DEVICE_UPDATE_URL + deviceID).toString());
+//		String method = "PUT";
+//		
+//		String payload = "{propertyName: \"" + propertyValue + "\"}";
+//		
+//		//Open the connection and make the request
+//		HttpURLConnection con;
+//		try {
+//			con = this.getConnection(url);
+//
+//			//Set the method to be used
+//			this.setMethod(con, method);
+//			
+//			//We need to initialize the header in order to make a put with JSON
+//			con.setDoOutput(true);
+//			con.setRequestProperty("Accept", "application/json");
+//			con.setRequestProperty("Content-Type", "application/json");
+//
+//			byte[] out = payload.getBytes(StandardCharsets.UTF_8);
+//
+//			OutputStream stream = con.getOutputStream();
+//			stream.write(out);
+//
+//			System.out.println(con.getResponseCode() + " " + con.getResponseMessage());
+//			con.disconnect();
+//
+//		} catch (IOException e1) {
+//			System.out.println("Error on put device");
+//			e1.printStackTrace();
+//		}
+//		
+//	}
+	
 	
 	@Override
 	public List<String> getPersonsList() throws JSONException, MalformedURLException{
@@ -177,4 +213,13 @@ public class APIManagerImpl implements APIManagerConfiguration {
 	public void start() {
 		// TODO: Add your implementation code here
 	}
+	
+//	public static void main(String args[]) throws MalformedURLException {
+//		APIManagerImpl m = new APIManagerImpl();
+//		m.putDevice("BinaryLight-5022136575", "binaryLight.powerStatus", "true");
+//		
+//	}
+	
 }
+
+

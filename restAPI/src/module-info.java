@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author pakyr
+ *
+ */
+module restAPI {
+}
