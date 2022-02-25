@@ -1,15 +1,11 @@
 package iCasa.intervention.manager;
 
-import java.util.concurrent.TimeUnit;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
 
-import fr.liglab.adele.icasa.service.scheduler.PeriodicRunnable;
 import fr.liglab.adele.icasa.device.button.PushButton;
 import fr.liglab.adele.icasa.device.light.BinaryLight;
 import fr.liglab.adele.icasa.device.presence.PresenceSensor;
@@ -21,8 +17,9 @@ import fr.liglab.adele.icasa.device.temperature.Thermometer;
 import fr.liglab.adele.icasa.device.doorWindow.DoorWindowSensor;
 import fr.liglab.adele.icasa.device.power.PowerSwitch;
 import fr.liglab.adele.icasa.device.gasSensor.CarbonMonoxydeSensor;
+import java.util.Map;
 
-public class InterventionManagerImpl implements PeriodicRunnable {
+public class InterventionManagerImpl {
 
 	/** Field for button dependency */
 	private PushButton button;
@@ -38,124 +35,145 @@ public class InterventionManagerImpl implements PeriodicRunnable {
 	private Heater heater;
 	/** Field for alarm dependency */
 	private Siren alarm;
-	/** Field for thermometer dependency */
-	private Thermometer thermometer;
+	/** Field for thermometers dependency */
+	private Thermometer[] thermometers;
 	/** Field for window dependency */
 	private DoorWindowSensor window;
 	/** Field for switcher dependency */
 	private PowerSwitch switcher;
 	/** Field for CO dependency */
 	private CarbonMonoxydeSensor CO;
-	
-	ServerSocket server;
 
+	ServerSocket server;
 	
+	// This method induces the causality relationships modeling the behaviors of the network nodes
+	public void induceCausality(String node, int value) {
+		switch (node) {
+		case "L":
+			break;
+		case "S":
+			// Modeling causality S->H and S->C
+			if (value == 1) {
+				cooler.setPropertyValue("cooler.powerLevel", (double) 0);
+				heater.setPropertyValue("heater.powerLevel", (double) 1000);
+			} else {
+				cooler.setPropertyValue("cooler.powerLevel", (double) 1000);
+				heater.setPropertyValue("heater.powerLevel", (double) 0);
+			}
+			break;
+		case "H":
+			break;
+		case "C":
+			break;
+		case "A":
+			// Modeling causality A->W
+			if (value == 1)
+				window.setPropertyValue("doorWindowSensor.opneningDetection", true);
+			else
+				window.setPropertyValue("doorWindowSensor.opneningDetection", false);
+			break;
+		case "B":
+			// Modeling causality B->W
+			if (value == 1)
+				window.setPropertyValue("doorWindowSensor.opneningDetection", true);
+			else
+				window.setPropertyValue("doorWindowSensor.opneningDetection", false);
+			break;
+		case "W":
+			// Modeling causality W->T
+			double currentValue = 0.0;
+			for (Thermometer device : thermometers) {
+				String location = (String) device.getPropertyValue("Location");
+				if (location.equals("room"))
+					currentValue = (double) device.getPropertyValue("thermometer.currentTemperature");
+					// In questo caso l'obiettivo non è tanto indurre dei valori reali, ma indurre la causalità
+					// quindi anche forzando a valori più significativi
+					// Probabilmente funzionerebbe anche semplicemente modificare la temperatura in modo casuale
+					// quando l'intervention viene fatta su W, senza badare nemmeno se true o false
+					
+					// Simula un cambio di temperatura repentino con l'apertura o la chiusura della finestra
+					if (value == 1)
+						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
+					else
+						device.setPropertyValue("thermometer.currentTemperature", (double) 300.0);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
 	public void intervention(String evidence) throws JSONException {
-		// evidence = {'H': 0}
+		// Format of evidence = {'H': 280}
+		// The conversion logic of incoming values is left to Python
+
 		JSONObject ev = new JSONObject(evidence);
 		System.out.println("Evidence " + ev);
-		
+
 		String node = JSONObject.getNames(ev)[0];
 		int value = (int) ev.get(node);
-		
-		switch(node) {
+
+		switch (node) {
 		case "L":
 			binaryLight.setPropertyValue("binaryLight.powerStatus", value == 0 ? false : true);
 			System.out.println(value == 0 ? false : true);
+			induceCausality(node, value);
 			break;
 		case "S":
 			switcher.setPropertyValue("powerSwitch.currentStatus", value == 0 ? false : true);
 			System.out.println(value == 0 ? false : true);
+			induceCausality(node, value);
 			break;
 		case "H":
-			heater.setPropertyValue("heater.powerLevel", (double) value == 0 ? 250.0 : 750.0);
-			System.out.println(value == 0 ? 250 : 750);
+			heater.setPropertyValue("heater.powerLevel", (double) value);
+			System.out.println(value);
+			induceCausality(node, value);
 			break;
 		case "C":
-			cooler.setPropertyValue("cooler.powerLevel", (double) value == 0 ? 250.0 : 750.0);
-			System.out.println(value == 0 ? 250 : 750);
+			cooler.setPropertyValue("cooler.powerLevel", (double) value);
+			System.out.println(value);
+			induceCausality(node, value);
 			break;
 		case "A":
 			alarm.setPropertyValue("siren.status", value == 0 ? false : true);
 			System.out.println(value == 0 ? false : true);
+			induceCausality(node, value);
 			break;
 		case "B":
 			button.setPropertyValue("pushButton.pushAndHold", value == 0 ? false : true);
 			System.out.println(value == 0 ? false : true);
+			induceCausality(node, value);
 			break;
 		case "W":
 			window.setPropertyValue("doorWindowSensor.opneningDetection", value == 0 ? false : true);
 			System.out.println(value == 0 ? false : true);
+			induceCausality(node, value);
+			break;
+		default:
 			break;
 		}
-		
-		
+
 	}
-	
+
 	public void doing() {
 		String fromClient;
-		
+
 		try {
 			boolean run = true;
-	        while(run) {
-	        	Socket client = server.accept();
-		        System.out.println("got connection on port 8080");
-		        BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-		        
-		        fromClient = in.readLine();
-		        System.out.println("received: " + fromClient);
-		        
-		        intervention(fromClient);
-		        
-	        }
+			while (run) {
+				Socket client = server.accept();
+				System.out.println("got connection on port 8080");
+				BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+				fromClient = in.readLine();
+				System.out.println("received: " + fromClient);
+
+				intervention(fromClient);
+
+			}
 		} catch (IOException | JSONException e) {
-			
+
 		}
-	}
-	
-	// Da provare non nel metodo run
-	@Override
-	public void run() {
-//		String fromClient;
-//        
-//        // ServerSocket server;
-//		try {
-//			// server = new ServerSocket(8080);
-//			// System.out.println("Socket opened on port 8080");
-//			
-//			boolean run = true;
-//	        while(run) {
-//	        	Socket client = server.accept();
-//		        System.out.println("got connection on port 8080");
-//		        BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-//		        
-//		        fromClient = in.readLine();
-//		        System.out.println("received: " + fromClient);
-//		        
-//		        intervention(fromClient);
-//		        
-//		        //if (!fromClient.equals(null)) {
-//		        // 	intervention(fromClient);
-//		        //}
-//		        
-//		        run = false;
-//		        client.close();
-//	            System.out.println("socket closed");
-//	        }
-//		} catch (IOException | JSONException e) {
-//			
-//		}
-        
-	}
-
-	@Override
-	public long getPeriod() {
-		return 1;
-	}
-
-	@Override
-	public TimeUnit getUnit() {
-		return TimeUnit.HOURS;
 	}
 
 	/** Component Lifecycle Method 
@@ -168,8 +186,17 @@ public class InterventionManagerImpl implements PeriodicRunnable {
 	 * @throws IOException */
 	public void start() throws IOException {
 		server = new ServerSocket(8080);
-		// Not call doing if using runnable interface
 		doing();
+	}
+
+	/** Bind Method for thermometers dependency */
+	public void bindThermometers(Thermometer thermometer, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	/** Unbind Method for thermometers dependency */
+	public void unbindThermometers(Thermometer thermometer, Map properties) {
+		// TODO: Add your implementation code here
 	}
 
 }

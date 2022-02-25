@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ipojo xmlns="org.apache.felix.ipojo">
   <component classname="iCasa.intervention.manager.InterventionManagerImpl" name="InterventionManager">
-    <provides specifications="fr.liglab.adele.icasa.service.scheduler.PeriodicRunnable"/>
     <callback method="start" transition="validate"/>
     <callback method="stop" transition="invalidate"/>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.presence.PresenceSensor" field="presenceSensor"/>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.light.BinaryLight" field="binaryLight"/>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.temperature.Heater" field="heater"/>
-    <requires optional="true" specification="fr.liglab.adele.icasa.device.temperature.Thermometer" field="thermometer"/>
+    <requires aggregate="true" optional="true" specification="fr.liglab.adele.icasa.device.temperature.Thermometer" field="thermometers">
+      <callback method="bindThermometers" type="bind"/>
+      <callback method="unbindThermometers" type="unbind"/>
+    </requires>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.doorWindow.DoorWindowSensor" field="window"/>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.temperature.Cooler" field="cooler"/>
     <requires optional="true" specification="fr.liglab.adele.icasa.device.gasSensor.CarbonMonoxydeSensor" field="CO"/>
