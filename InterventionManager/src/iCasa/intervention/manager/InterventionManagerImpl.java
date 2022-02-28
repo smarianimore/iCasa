@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 
 import fr.liglab.adele.icasa.device.button.PushButton;
 import fr.liglab.adele.icasa.device.light.BinaryLight;
@@ -17,7 +18,6 @@ import fr.liglab.adele.icasa.device.temperature.Thermometer;
 import fr.liglab.adele.icasa.device.doorWindow.DoorWindowSensor;
 import fr.liglab.adele.icasa.device.power.PowerSwitch;
 import fr.liglab.adele.icasa.device.gasSensor.CarbonMonoxydeSensor;
-import java.util.Map;
 
 public class InterventionManagerImpl {
 
@@ -54,16 +54,32 @@ public class InterventionManagerImpl {
 		case "S":
 			// Modeling causality S->H and S->C
 			if (value == 1) {
-				cooler.setPropertyValue("cooler.powerLevel", (double) 0);
-				heater.setPropertyValue("heater.powerLevel", (double) 1000);
+				cooler.setPropertyValue("cooler.powerLevel", (double) 0.0);
+				heater.setPropertyValue("heater.powerLevel", (double) 1000.0);
 			} else {
-				cooler.setPropertyValue("cooler.powerLevel", (double) 1000);
-				heater.setPropertyValue("heater.powerLevel", (double) 0);
+				cooler.setPropertyValue("cooler.powerLevel", (double) 1000.0);
+				heater.setPropertyValue("heater.powerLevel", (double) 0.0);
 			}
 			break;
 		case "H":
+			for (Thermometer device : thermometers) {
+				String location = (String) device.getPropertyValue("Location");
+				if (location.equals("room"))
+					if (value == 1)
+						device.setPropertyValue("thermometer.currentTemperature", (double) device.getPropertyValue("thermometer.currentTemperature") * 2);
+					else
+						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
+			}
 			break;
 		case "C":
+			for (Thermometer device : thermometers) {
+				String location = (String) device.getPropertyValue("Location");
+				if (location.equals("room"))
+					if (value == 1)
+						device.setPropertyValue("thermometer.currentTemperature", (double) device.getPropertyValue("thermometer.currentTemperature") * 2);
+					else
+						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
+			}
 			break;
 		case "A":
 			// Modeling causality A->W
@@ -125,12 +141,12 @@ public class InterventionManagerImpl {
 			induceCausality(node, value);
 			break;
 		case "H":
-			heater.setPropertyValue("heater.powerLevel", (double) value);
+			heater.setPropertyValue("heater.powerLevel", value == 0 ? 0.0 : 1000.0);
 			System.out.println(value);
 			induceCausality(node, value);
 			break;
 		case "C":
-			cooler.setPropertyValue("cooler.powerLevel", (double) value);
+			cooler.setPropertyValue("cooler.powerLevel", value == 0 ? 0.0 : 1000.0);
 			System.out.println(value);
 			induceCausality(node, value);
 			break;
@@ -159,33 +175,45 @@ public class InterventionManagerImpl {
 		String fromClient;
 
 		try {
-			boolean run = true;
-			while (run) {
+			while (true) {
 				Socket client = server.accept();
-				System.out.println("got connection on port 8080");
+				System.out.println("Client connected");
 				BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
 				fromClient = in.readLine();
 				System.out.println("received: " + fromClient);
-
+				
 				intervention(fromClient);
 
 			}
 		} catch (IOException | JSONException e) {
-
+			System.out.println("Intervention process failed!");
 		}
 	}
 
 	/** Component Lifecycle Method 
 	 * @throws IOException */
-	public void stop() throws IOException {
-		server.close();
+	public void stop() {
+		try {
+			server.close();
+			System.out.println("Server closed");
+		} catch (IOException e) {
+			System.out.println("Error on server close");
+			e.printStackTrace();
+		}
 	}
 
 	/** Component Lifecycle Method 
 	 * @throws IOException */
-	public void start() throws IOException {
-		server = new ServerSocket(8080);
+	public void start() {
+		try {
+			server = new ServerSocket(7777);
+			System.out.println("Server started");
+		} catch (IOException e) {
+			System.out.println("Error on server start");
+			e.printStackTrace();
+		}
+		
 		doing();
 	}
 
