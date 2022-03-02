@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.*;
 import java.util.Map;
+import java.util.Random;
 
 import fr.liglab.adele.icasa.device.button.PushButton;
 import fr.liglab.adele.icasa.device.light.BinaryLight;
@@ -25,12 +26,8 @@ public class InterventionManagerImpl {
 	private PushButton button;
 	/** Field for binaryLight dependency */
 	private BinaryLight binaryLight;
-	/** Field for presenceSensor dependency */
-	private PresenceSensor presenceSensor;
 	/** Field for cooler dependency */
 	private Cooler cooler;
-	/** Field for CO2 dependency */
-	private CarbonDioxydeSensor CO2;
 	/** Field for heater dependency */
 	private Heater heater;
 	/** Field for alarm dependency */
@@ -41,10 +38,63 @@ public class InterventionManagerImpl {
 	private DoorWindowSensor window;
 	/** Field for switcher dependency */
 	private PowerSwitch switcher;
+	/** Field for presenceSensor dependency */
+	private PresenceSensor presenceSensor;
 	/** Field for CO dependency */
 	private CarbonMonoxydeSensor CO;
+	/** Field for CO2 dependency */
+	private CarbonDioxydeSensor CO2;
 
 	ServerSocket server;
+	
+	// The method initialize the devices (could probably increase the sense or real of the scenario)
+	public void randomInitialization() {
+		Random r = new Random();
+		
+		//INDOOR TEMPERATURE THRESHOLD
+		double rangeMinIndoorT = 273.15;
+		double rangeMaxIndoorT = 303.15;
+		double rndIndoorT = rangeMinIndoorT + (rangeMaxIndoorT - rangeMinIndoorT) * r.nextDouble();
+
+		//OUTDOOR TEMPERATURE THRESHOLD
+		 double rangeMinOutdoorT = 273.15;
+		 double rangeMaxOutdoorT = 303.15;
+		 double rndOutdoorT = rangeMinOutdoorT + (rangeMaxOutdoorT - rangeMinOutdoorT) * r.nextDouble();
+		
+		for (Thermometer device : thermometers) {
+			String location = (String) device.getPropertyValue("Location");
+			if (location.equals("room")) {
+				device.setPropertyValue("thermometer.currentTemperature", (double) rndIndoorT);
+			}
+			if (location.equals("outdoor")) {
+				device.setPropertyValue("thermometer.currentTemperature", (double) rndOutdoorT);
+			}
+		}
+
+		//HEATER LEVEL
+		double rangeMinHeaterLeavel = 0;
+		double rangeMaxHeaterLeavel = 1000;
+		double rndHeaterLevel = rangeMinHeaterLeavel + (rangeMaxHeaterLeavel - rangeMinHeaterLeavel) * r.nextDouble();
+		heater.setPropertyValue("heater.powerLevel", (double) rndHeaterLevel); 
+
+		//COOLER LEVEL
+		double rangeMinCoolerLeavel = 0;
+		double rangeMaxCoolerLeavel = 1000;
+		double rndCoolerLevel = rangeMinCoolerLeavel + (rangeMaxCoolerLeavel - rangeMinCoolerLeavel) * r.nextDouble();
+		cooler.setPropertyValue("cooler.powerLevel", (double) rndCoolerLevel); 
+
+		//WINDOW OPENED/CLOSED
+		boolean opening = r.nextBoolean();
+		window.setPropertyValue("doorWindowSensor.opneningDetection", opening);
+
+		//BUTTON
+		boolean btn = r.nextBoolean();
+		button.setPropertyValue("pushButton.pushAndHold", btn);
+
+		//SWITCHER
+		boolean s = r.nextBoolean();
+		switcher.setPropertyValue("powerSwitch.currentStatus", s);
+	}
 	
 	// This method induces the causality relationships modeling the behaviors of the network nodes
 	public void induceCausality(String node, int value) {
@@ -52,34 +102,40 @@ public class InterventionManagerImpl {
 		case "L":
 			break;
 		case "S":
-			// Modeling causality S->H and S->C
-			if (value == 1) {
-				cooler.setPropertyValue("cooler.powerLevel", (double) 0.0);
+			// Modeling causality S->H and S->C: each device takes the opposite actual value
+			double h = (double) heater.getPropertyValue("heater.powerLevel");
+			double c = (double) cooler.getPropertyValue("cooler.powerLevel");
+			
+			if (h == 0.0)
 				heater.setPropertyValue("heater.powerLevel", (double) 1000.0);
-			} else {
-				cooler.setPropertyValue("cooler.powerLevel", (double) 1000.0);
+			else
 				heater.setPropertyValue("heater.powerLevel", (double) 0.0);
-			}
+			
+			if (c == 0.0)
+				cooler.setPropertyValue("cooler.powerLevel", (double) 1000.0);
+			else
+				cooler.setPropertyValue("cooler.powerLevel", (double) 0.0);
+
 			break;
 		case "H":
-			for (Thermometer device : thermometers) {
-				String location = (String) device.getPropertyValue("Location");
-				if (location.equals("room"))
-					if (value == 1)
-						device.setPropertyValue("thermometer.currentTemperature", (double) device.getPropertyValue("thermometer.currentTemperature") * 2);
-					else
-						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
-			}
+//			for (Thermometer device : thermometers) {
+//				String location = (String) device.getPropertyValue("Location");
+//				if (location.equals("room"))
+//					if (value == 1)
+//						device.setPropertyValue("thermometer.currentTemperature", (double) device.getPropertyValue("thermometer.currentTemperature") * 2);
+//					else
+//						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
+//			}
 			break;
 		case "C":
-			for (Thermometer device : thermometers) {
-				String location = (String) device.getPropertyValue("Location");
-				if (location.equals("room"))
-					if (value == 1)
-						device.setPropertyValue("thermometer.currentTemperature", (double) device.getPropertyValue("thermometer.currentTemperature") * 2);
-					else
-						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
-			}
+//			for (Thermometer device : thermometers) {
+//				String location = (String) device.getPropertyValue("Location");
+//				if (location.equals("room"))
+//					if (value == 1)
+//						device.setPropertyValue("thermometer.currentTemperature", (double) device.getPropertyValue("thermometer.currentTemperature") * 2);
+//					else
+//						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
+//			}
 			break;
 		case "A":
 			// Modeling causality A->W
@@ -97,21 +153,40 @@ public class InterventionManagerImpl {
 			break;
 		case "W":
 			// Modeling causality W->T
-			double currentValue = 0.0;
+			double currentValueInt = 0.0;
+			double currentValueExt = 0.0;
+			Thermometer in = null;
 			for (Thermometer device : thermometers) {
 				String location = (String) device.getPropertyValue("Location");
-				if (location.equals("room"))
-					currentValue = (double) device.getPropertyValue("thermometer.currentTemperature");
-					// In questo caso l'obiettivo non è tanto indurre dei valori reali, ma indurre la causalità
-					// quindi anche forzando a valori più significativi
-					// Probabilmente funzionerebbe anche semplicemente modificare la temperatura in modo casuale
-					// quando l'intervention viene fatta su W, senza badare nemmeno se true o false
-					
-					// Simula un cambio di temperatura repentino con l'apertura o la chiusura della finestra
-					if (value == 1)
-						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
-					else
-						device.setPropertyValue("thermometer.currentTemperature", (double) 300.0);
+				if (location.equals("room")) {
+					currentValueInt = (double) device.getPropertyValue("thermometer.currentTemperature");
+					in = device;
+				}
+				else if (location.equals("outdoor")) {
+					currentValueExt = (double) device.getPropertyValue("thermometer.currentTemperature");
+				}
+			}
+			// Simuliamo il cambiamento di temperatura dovuto alla temperatura esterna ed all'apertura/chiusura della finestra
+			// Windows is open
+			if (value == 1) {
+				System.out.println("Current temperatures: " + currentValueExt + " " + currentValueInt);
+
+				// Test: simulate a real change in external temperature
+//				Random r = new Random();
+//				double rangeMinOutdoorT = 273.15;
+//				double rangeMaxOutdoorT = 303.15;
+//				double rndOutdoorT = rangeMinOutdoorT + (rangeMaxOutdoorT - rangeMinOutdoorT) * r.nextDouble();
+//				currentValueExt = rndOutdoorT;
+//				System.out.println("Current temperatures: " + "Internal=" + currentValueInt + "External=" + currentValueExt);
+				
+				if (currentValueExt < currentValueInt)
+					in.setPropertyValue("thermometer.currentTemperature", (double) 273.15); // minimum value
+				// This case should be added in a real scenario, where the external temperature changes during the time
+				// but in our simulation it remains always constant
+				else if (currentValueExt == currentValueInt)
+					in.setPropertyValue("thermometer.currentTemperature", (double) currentValueInt); //no action
+				else
+					in.setPropertyValue("thermometer.currentTemperature", (double) 303.15); // maximum value
 			}
 			break;
 		default:
@@ -120,8 +195,7 @@ public class InterventionManagerImpl {
 	}
 
 	public void intervention(String evidence) throws JSONException {
-		// Format of evidence = {'H': 280}
-		// The conversion logic of incoming values is left to Python
+		// Format of evidence = {'H': 1}
 
 		JSONObject ev = new JSONObject(evidence);
 		System.out.println("Evidence " + ev);
@@ -219,12 +293,11 @@ public class InterventionManagerImpl {
 
 	/** Bind Method for thermometers dependency */
 	public void bindThermometers(Thermometer thermometer, Map properties) {
-		// TODO: Add your implementation code here
+		randomInitialization();
 	}
 
 	/** Unbind Method for thermometers dependency */
 	public void unbindThermometers(Thermometer thermometer, Map properties) {
-		// TODO: Add your implementation code here
 	}
 
 }

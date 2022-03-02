@@ -79,13 +79,13 @@ iPOJO-Components: instance { $component="InterventionManager" $name="Int
  eld { $name="switcher" $type="fr.liglab.adele.icasa.device.power.PowerS
  witch" }field { $name="thermometers" $type="fr.liglab.adele.icasa.devic
  e.temperature.Thermometer[]" }field { $name="window" $type="fr.liglab.a
- dele.icasa.device.doorWindow.DoorWindowSensor" }method { $name="induceC
- ausality" $arguments="{java.lang.String,int}" $names="{node,value}" }me
- thod { $name="intervention" $arguments="{java.lang.String}" $names="{ev
- idence}" }method { $name="doing" }method { $name="stop" }method { $name
- ="start" }method { $name="bindThermometers" $arguments="{fr.liglab.adel
- e.icasa.device.temperature.Thermometer,java.util.Map}" $names="{thermom
- eter,properties}" }method { $name="unbindThermometers" $arguments="{fr.
- liglab.adele.icasa.device.temperature.Thermometer,java.util.Map}" $name
- s="{thermometer,properties}" }}}
+ dele.icasa.device.doorWindow.DoorWindowSensor" }method { $name="randomI
+ nitialization" }method { $name="induceCausality" $arguments="{java.lang
+ .String,int}" $names="{node,value}" }method { $name="intervention" $arg
+ uments="{java.lang.String}" $names="{evidence}" }method { $name="doing"
+  }method { $name="stop" }method { $name="start" }method { $name="bindTh
+ ermometers" $arguments="{fr.liglab.adele.icasa.device.temperature.Therm
+ ometer,java.util.Map}" $names="{thermometer,properties}" }method { $nam
+ e="unbindThermometers" $arguments="{fr.liglab.adele.icasa.device.temper
+ ature.Thermometer,java.util.Map}" $names="{thermometer,properties}" }}}
 
