@@ -49,7 +49,8 @@ public class InterventionManagerImpl {
 	
 	// The method initialize the devices (could probably increase the sense or real of the scenario)
 	public void randomInitialization() {
-		Random r = new Random();
+		long seed = 12;
+		Random r = new Random(seed);
 		
 		//INDOOR TEMPERATURE THRESHOLD
 		double rangeMinIndoorT = 273.15;
@@ -118,24 +119,8 @@ public class InterventionManagerImpl {
 
 			break;
 		case "H":
-//			for (Thermometer device : thermometers) {
-//				String location = (String) device.getPropertyValue("Location");
-//				if (location.equals("room"))
-//					if (value == 1)
-//						device.setPropertyValue("thermometer.currentTemperature", (double) device.getPropertyValue("thermometer.currentTemperature") * 2);
-//					else
-//						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
-//			}
 			break;
 		case "C":
-//			for (Thermometer device : thermometers) {
-//				String location = (String) device.getPropertyValue("Location");
-//				if (location.equals("room"))
-//					if (value == 1)
-//						device.setPropertyValue("thermometer.currentTemperature", (double) device.getPropertyValue("thermometer.currentTemperature") * 2);
-//					else
-//						device.setPropertyValue("thermometer.currentTemperature", (double) 0.0);
-//			}
 			break;
 		case "A":
 			// Modeling causality A->W
@@ -166,23 +151,13 @@ public class InterventionManagerImpl {
 					currentValueExt = (double) device.getPropertyValue("thermometer.currentTemperature");
 				}
 			}
-			// Simuliamo il cambiamento di temperatura dovuto alla temperatura esterna ed all'apertura/chiusura della finestra
 			// Windows is open
 			if (value == 1) {
-				System.out.println("Current temperatures: " + currentValueExt + " " + currentValueInt);
-
-				// Test: simulate a real change in external temperature
-//				Random r = new Random();
-//				double rangeMinOutdoorT = 273.15;
-//				double rangeMaxOutdoorT = 303.15;
-//				double rndOutdoorT = rangeMinOutdoorT + (rangeMaxOutdoorT - rangeMinOutdoorT) * r.nextDouble();
-//				currentValueExt = rndOutdoorT;
-//				System.out.println("Current temperatures: " + "Internal=" + currentValueInt + "External=" + currentValueExt);
-				
 				if (currentValueExt < currentValueInt)
 					in.setPropertyValue("thermometer.currentTemperature", (double) 273.15); // minimum value
-				// This case should be added in a real scenario, where the external temperature changes during the time
-				// but in our simulation it remains always constant
+				// This case should be added in a real scenario, where the external temperature changes during the time.
+				// Even if, in our simulation, it remains always constant, we can adopt this statement because we randomly initialize
+				// the values at the beginning
 				else if (currentValueExt == currentValueInt)
 					in.setPropertyValue("thermometer.currentTemperature", (double) currentValueInt); //no action
 				else

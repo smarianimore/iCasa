@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipojo xmlns="org.apache.felix.ipojo">
+  <component classname="it.unimore.icasa.rest.DevicePropertyREST" name="DevicePropertyREST">
+    <provides specifications="org.wisdom.api.Controller"/>
+    <requires specification="fr.liglab.adele.icasa.ContextManager" field="contextMgr"/>
+  </component>
+  <instance component="DevicePropertyREST" name="DevicePropertyREST-Instance"/>
+</ipojo>
