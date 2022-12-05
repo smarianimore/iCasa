@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SystemManager
+Bundle-RequiredExecutionEnvironment: JavaSE-9
 Bundle-SymbolicName: SystemManager
 Bundle-Version: 1.0.0.qualifier
 Created-By: iPOJO 1.12.1
-Bundle-RequiredExecutionEnvironment: JavaSE-9
 Import-Package: fr.liglab.adele.icasa, fr.liglab.adele.icasa.access, fr.
  liglab.adele.icasa.access.command, fr.liglab.adele.icasa.application, f
  r.liglab.adele.icasa.application.impl, fr.liglab.adele.icasa.applicatio

@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DatasetManager
+Bundle-RequiredExecutionEnvironment: JavaSE-9
 Bundle-SymbolicName: datasetManager
 Bundle-Version: 1.0.0.qualifier
-Export-Package: iCasa.dataset.manager.services
-Bundle-RequiredExecutionEnvironment: JavaSE-9
 Created-By: iPOJO 1.12.1
+Export-Package: iCasa.dataset.manager.services
 Import-Package: fr.liglab.adele.icasa, fr.liglab.adele.icasa.access, fr.
  liglab.adele.icasa.access.command, fr.liglab.adele.icasa.application, f
  r.liglab.adele.icasa.application.impl, fr.liglab.adele.icasa.applicatio

@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DevicePropertyRestAPI
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-SymbolicName: DevicePropertyRestAPI
 Bundle-Version: 1.0.0.qualifier
-Export-Package: it.unimore.icasa.rest
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Created-By: iPOJO 1.12.1
+Export-Package: it.unimore.icasa.rest
 Import-Package: com.fasterxml.jackson.core;version=2.4.4, com.fasterxml.
  jackson.databind;version=2.4.4, fr.liglab.adele.icasa, fr.liglab.adele.
  icasa.access, fr.liglab.adele.icasa.access.command, fr.liglab.adele.ica
